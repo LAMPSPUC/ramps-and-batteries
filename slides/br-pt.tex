@@ -1,0 +1,118 @@
+
+% =========================================================== 8. Caso Brasil, os dados
+\begin{frame}
+  \framesubtitle{Caso Brasil \ \textbullet\ \ quarta, 4 de fevereiro de 2026}
+  \frametitle{O parque sobe 43 GW e o CMO se multiplica por 8.}
+
+  \begin{columns}[T,onlytextwidth]
+  \begin{column}{0.545\textwidth}
+    \vspace{0.5em}
+    \centering
+    \resizebox{\linewidth}{!}{\input{figures/fig-dia.tikz}}
+
+    \vspace{0.5em}
+    \raggedright
+    {\fontsize{5.9}{7.4}\selectfont\color{muted}
+     \textcolor{ink}{\rule[0.22ex]{0.9em}{1.1pt}}~demanda líquida\hfill
+     \textcolor{muted}{\rule[0.22ex]{0.9em}{0.5pt}}~carga bruta\hfill
+     \textcolor{tealx}{\rule[0.22ex]{0.9em}{0.7pt}}~eólica + solar\hfill
+     \textcolor{brick!35}{\rule[0ex]{0.6em}{0.6em}}~CMO, eixo direito\par}
+
+    \vspace{0.4em}
+    \gloss{t1 é o vale (12h) e t2 é a ponta (19h) da curva do parque controlável.
+    A carga bruta quase não se mexe: quem sobe 43 GW é o parque controlável.}
+  \end{column}
+
+  \begin{column}{0.425\textwidth}
+    \vspace{0.5em}
+    {\fontsize{7.3}{9.2}\selectfont
+    \setlength{\tabcolsep}{2.8pt}
+    \renewcommand{\arraystretch}{1.12}
+    \begin{tabular}{l r r r}
+      \toprule
+       & \textbf{t1 · 12h} & \textbf{t2 · 19h} & \textbf{$\Delta$} \\
+      \midrule
+      Carga bruta        & 97.168 & 99.352 & \hl{$+$2.185} \\
+      Eólica + solar     & 41.281 & 5.464  & \hl{$-$35.816} \\
+      Distribuída        & 28.428 & 278    & \hl{$-$28.150} \\
+      \addlinespace[0.1em]\midrule
+      Hidráulica         & 41.696 & 81.048 & $+$39.352 \\
+      Térmica            & 8.453  & 12.064 & $+$3.611 \\
+      \textbf{Controlável} & \hg{50.148} & \hg{93.111} & \hg{$+$42.963} \\
+      \addlinespace[0.1em]\midrule
+      CMO (SE)           & 309    & \hl{2.521} & $\times$8,2 \\
+      PLD (SE)           & 350    & 1.200  & $\times$3,4 \\
+      \bottomrule
+    \end{tabular}}
+
+    \vspace{0.5em}
+    \thesis{\fontsize{7.1}{9}\selectfont
+      Dois dias depois o mesmo sistema moveu 27 GW e o CMO andou 47 R\$/MWh.
+      No dia 4 moveu 43 GW e o CMO andou 2.212. O valor da flexibilidade está
+      concentrado em poucas horas do ano.}
+  \end{column}
+  \end{columns}
+\end{frame}
+
+% =========================================================== 9. Caso Brasil, a pilha
+\begin{frame}
+  \framesubtitle{Caso Brasil \ \textbullet\ \ a pilha e a bateria}
+  \frametitle{A rampa da hidráulica é o que separa os dois preços.}
+
+  \begin{columns}[T,onlytextwidth]
+  \begin{column}{0.545\textwidth}
+    \vspace{0.5em}
+    \centering
+    \resizebox{\linewidth}{!}{\input{figures/fig-pilha.tikz}}
+
+    \vspace{0.5em}
+    \raggedright
+    {\fontsize{5.9}{7.4}\selectfont\color{muted}
+     \textcolor{muted!60}{\rule[0ex]{0.6em}{0.6em}}~hidro inflexível\hfill
+     \textcolor{tealx!45}{\rule[0ex]{0.6em}{0.6em}}~hidro flexível\hfill
+     \textcolor{brick!40}{\rule[0ex]{0.6em}{0.6em}}~térmicas por CVU\par
+     \textcolor{ink}{\rule[0.22ex]{0.9em}{0.4pt}}~quantidade da hora\hfill
+     \textcolor{brick}{\rule[0.22ex]{0.9em}{0.8pt}}~preço do modelo\hfill\mbox{}\par}
+
+    \vspace{0.4em}
+    \gloss{As verticais tracejadas são quantidades, o que o parque entregou em
+    cada hora; as horizontais são preços. Elas se afastam quando a hidráulica
+    flexível deixa de alcançar a ponta. Rampa de 14,3\%/h da flexível, a do dia.}
+  \end{column}
+
+  \begin{column}{0.425\textwidth}
+    \vspace{0.5em}
+    {\fontsize{6.5}{8.4}\selectfont
+    \setlength{\tabcolsep}{1.9pt}
+    \renewcommand{\arraystretch}{1.12}
+    \begin{tabular}{l r r r @{\hspace{0.55em}} r r r}
+      \toprule
+      {\fontsize{5.6}{6}\selectfont R\$ mi}
+        & \multicolumn{3}{c}{\textbf{Sem bat. \ 309\,$\rightarrow$\,446}}
+        & \multicolumn{3}{c}{\textbf{Com bat. \ 309\,$\rightarrow$\,347}} \\
+      \cmidrule(r){2-4}\cmidrule(l){5-7}
+       & Rec. & Custo & Lucro & Rec. & Custo & Lucro \\
+      \midrule
+      Hidro inflex. & 31,5 & 0,0 & 31,5 & 27,3 & 0,0 & 27,3 \\
+      Hidro flexível   & 17,7 & 12,3 & 5,4 & 14,4 & 12,9 & 1,5 \\
+      Térmica          & 7,9 & 4,3 & 3,6 & 6,0 & 3,4 & 2,6 \\
+      Bateria          & & & & \hg{0,1} & \hg{0,0} & \hg{0,1} \\
+      \addlinespace[0.1em]\midrule
+      Demanda líq. & \hl{$-$57,0} & & & \hl{$-$47,8} & & \\
+      \addlinespace[0.1em]\midrule
+      \textbf{Soma}    & \textbf{0,0} & \textbf{16,5} & \textbf{40,5}
+                       & \textbf{0,0} & \textbf{16,3} & \textbf{31,5} \\
+      \bottomrule
+    \end{tabular}}
+
+    \vspace{0.35em}
+    \gloss{Com 2.000 MWh de bateria. A receita soma zero nos dois casos.}
+
+    \vspace{0.4em}
+    \thesis{\fontsize{7.1}{9}\selectfont
+      A demanda paga R\$ 9,2 milhões a menos, e o custo de operação cai só
+      R\$ 0,2 milhão: quase tudo é transferência dos inframarginais para o
+      consumidor, e a bateria fica com R\$ 0,1 milhão.}
+  \end{column}
+  \end{columns}
+\end{frame}

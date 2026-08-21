@@ -1,0 +1,341 @@
+% =========================================================== 1. capa
+{\setbeamertemplate{footline}{}
+\begin{frame}[plain]
+  \vspace{1.7em}
+  {\color{brick}\rule{3.6em}{2.4pt}}
+
+  \vspace{1.1em}
+  {\fontsize{29}{33}\selectfont\bfseries Quando o preço diz a verdade\par}
+
+  \vspace{0.55em}
+  {\fontsize{14.5}{18}\selectfont\color{muted} Uma bateria, duas horas e o valor da flexibilidade\par}
+
+  \vspace{1.5em}
+  \begin{minipage}{0.70\textwidth}
+    \fontsize{9.6}{13}\selectfont
+    Um exemplo mínimo, com dois geradores e uma restrição de rampa, que mostra de
+    onde vem a receita de uma bateria e por que ela é exatamente igual ao que a
+    bateria economiza para o sistema.
+  \end{minipage}
+
+  \vfill
+  {\fontsize{8.4}{10}\selectfont\color{muted} Alexandre Street\ \ \textbullet\ \ Agosto de 2026}
+  \vspace{0.8em}
+\end{frame}}
+
+% =========================================================== 2. o sistema
+\begin{frame}
+  \framesubtitle{O problema}
+  \frametitle{A demanda sobe 30 MWh em uma hora. A térmica barata sobe 25.}
+
+  \begin{columns}[T,onlytextwidth]
+  \begin{column}{0.42\textwidth}
+    \vspace{0.9em}
+    \fontsize{9.4}{12.6}\selectfont
+    \begin{itemize}\setlength{\itemsep}{0.5em}
+      \item Duas térmicas, capacidade ilimitada.
+      \item Custo variável de \textbf{100} e \textbf{300} R\$/MWh.
+      \item Rampa de subida de \textbf{25 MWh/h}, igual para as duas.
+      \item Demanda de \textbf{100 MWh} em t1 e \textbf{130 MWh} em t2.
+    \end{itemize}
+
+    \vspace{0.9em}
+    \gloss{t1 é a primeira hora do horizonte, de modo que a rampa restringe
+    apenas o degrau de t1 para t2.}
+  \end{column}
+
+  \begin{column}{0.55\textwidth}
+    \vspace{0.7em}
+    \centering
+    \begin{tikzpicture}[y=0.088cm,x=0.86cm]
+      \draw[rulec,line width=0.7pt] (-0.30,90) -- (-0.30,136);
+      \foreach \v in {100,125,130}{
+        \draw[rulec,line width=0.7pt] (-0.42,\v) -- (-0.30,\v);
+        \node[left,muted,font=\fontsize{6.4}{7}\selectfont] at (-0.46,\v) {\v};
+      }
+      \draw[ink,line width=2.0pt] (0.10,100) -- (1.55,100);
+      \node[above,font=\fontsize{7.6}{8}\selectfont\bfseries,ink] at (0.82,101.5) {100 MWh};
+      \draw[ink,line width=2.0pt] (2.75,130) -- (4.20,130);
+      \node[above,font=\fontsize{7.6}{8}\selectfont\bfseries,ink] at (3.47,131.5) {130 MWh};
+      \draw[brick,line width=1.0pt,dashed] (2.75,125) -- (4.20,125);
+      \node[below,font=\fontsize{6.4}{7}\selectfont,brick] at (3.47,123.6) {125 = 100 + 25};
+      \draw[brick,line width=0.9pt] (4.42,125) -- (4.42,130);
+      \draw[brick,line width=0.9pt] (4.34,125) -- (4.50,125);
+      \draw[brick,line width=0.9pt] (4.34,130) -- (4.50,130);
+      \node[right,font=\fontsize{7.4}{8.4}\selectfont\bfseries,brick,align=left]
+        at (4.50,127.5) {5 MWh\\[-1pt]{\fontsize{6.2}{7.4}\selectfont\mdseries da térmica cara}};
+      \draw[->,>=stealth,muted,line width=0.9pt] (1.62,100.8) -- (2.68,124.2);
+      \node[muted,font=\fontsize{6.4}{7.6}\selectfont,anchor=south east,align=right,rotate=0]
+        at (2.30,110) {rampa máxima\\[-1pt]25 MWh/h};
+      \node[muted,font=\fontsize{7.4}{8}\selectfont] at (0.82,93.5) {t1};
+      \node[muted,font=\fontsize{7.4}{8}\selectfont] at (3.47,93.5) {t2};
+      \draw[rulec,line width=0.7pt] (-0.30,90) -- (5.35,90);
+    \end{tikzpicture}
+
+    \vspace{0.5em}
+    \gloss{\centering Eixo vertical truncado em 90 MWh.}
+  \end{column}
+  \end{columns}
+\end{frame}
+
+% =========================================================== 3. caso A
+\begin{frame}
+  \framesubtitle{Caso A \ \textbullet\ \ sem bateria}
+  \frametitle{O despacho ótimo custa R\$ 24.000, e o preço em t1 fica negativo.}
+
+  \begin{columns}[T,onlytextwidth]
+  \begin{column}{0.635\textwidth}
+    \vspace{0.9em}
+    {\tabfont
+    \setlength{\tabcolsep}{4.0pt}
+    \renewcommand{\arraystretch}{1.19}
+    \begin{tabular}{l r r @{\hspace{1.1em}} r r r}
+      \toprule
+       & \textbf{t1} & \textbf{t2} & \textbf{Receita} & \textbf{Custo} & \textbf{Lucro} \\
+      \midrule
+      Demanda        & 100 & 130 & $-$29.000 & & \\
+      Térmica 1      & 100 & 125 & 27.500 & 22.500 & 5.000 \\
+      Térmica 2      & 0   & 5   & 1.500  & 1.500  & 0 \\
+      \addlinespace[0.1em]\midrule
+      Custo da hora  & 10.000 & 14.000 & & & \\
+      Preço spot     & \hl{$-$100} & \textbf{300} & & & \\
+      \addlinespace[0.1em]\midrule
+      \textbf{Soma}  & & & \textbf{0} & \textbf{24.000} & \textbf{5.000} \\
+      \bottomrule
+    \end{tabular}}
+
+    \vspace{0.8em}
+    \gloss{Quantidades em MWh; receita, custo, lucro e custo da hora em R\$;
+    preço spot em R\$/MWh. A receita da demanda entra negativa, porque é o que
+    os consumidores pagam. O preço spot de cada hora é o custo marginal de
+    operação: a variação do custo total dos dois períodos quando se acrescenta
+    1 MWh de demanda naquela hora, mantendo a outra parada.}
+  \end{column}
+
+  \begin{column}{0.335\textwidth}
+    \vspace{0.9em}
+    \panel{%
+      \fontsize{8.2}{10.6}\selectfont
+      \textbf{O modelo de despacho}\par
+      \vspace{0.55em}
+      $\displaystyle\min_{g\,\ge\,0}\ \sum_{t}\sum_{i} c_i\,g_{i,t}$\par
+      \vspace{0.55em}
+      sujeito a\par
+      \vspace{0.30em}
+      $\textstyle\sum_i g_{i,t} = d_t \quad (\lambda_t)$\par
+      \vspace{0.42em}
+      $g_{i,2}-g_{i,1} \le R \quad (\mu_i)$\par
+      \vspace{0.62em}
+      \gloss{$\lambda_t$ é o preço da energia na hora $t$. $\mu_i$ é quanto vale,
+      para o sistema, 1 MWh a mais de rampa.}
+    }
+  \end{column}
+  \end{columns}
+\end{frame}
+
+% =========================================================== 4. duais
+\begin{frame}
+  \framesubtitle{A leitura das duais}
+  \frametitle{O preço negativo não é defeito do modelo. É a conta certa.}
+
+  \begin{columns}[T,onlytextwidth]
+  \begin{column}{0.50\textwidth}
+    \vspace{0.5em}
+    {\fontsize{9.6}{12}\selectfont\hspace{0.9em}
+    $\begin{aligned}
+      \mu_1 &= c_2-c_1        &&= \hlm{200} \\[3pt]
+      \lambda_1 &= c_1-\mu_1  &&= \hlm{-100} \\[3pt]
+      \lambda_2 &= c_1+\mu_1  &&= \hlm{+300} \\[3pt]
+      \lambda_2-\lambda_1 &= 2\,(c_2-c_1) &&= \hgm{400}
+    \end{aligned}$\par}
+
+    \vspace{0.85em}
+    {\fontsize{8.6}{11.4}\selectfont
+    \begin{itemize}\setlength{\itemsep}{0.34em}
+      \item A folga de rampa vale a diferença entre as duas máquinas.
+      \item Gerar em t1 custa 100 e \emph{cria} folga que vale 200. Líquido, $-$100.
+      \item Gerar em t2 custa 100 e \emph{consome} folga que vale 200. Total, 300.
+      \item O spread entre as horas é o dobro da diferença de custos.
+    \end{itemize}}
+  \end{column}
+
+  \begin{column}{0.47\textwidth}
+    \vspace{0.5em}
+    \panel{%
+      \fontsize{8.6}{11}\selectfont
+      \textbf{Adequação de receita}\par
+      \vspace{0.15em}
+      Os consumidores pagam 29.000 e os geradores recebem 29.000. A coluna de
+      receita soma zero.
+
+      \vspace{0.8em}
+      \textbf{Recuperação de custo}\par
+      \vspace{0.15em}
+      A Térmica 1 vende a $-$100 em t1 e ainda assim fecha com lucro de 5.000,
+      que é exatamente $\mu_1 \times R = 200 \times 25$, a renda da própria
+      rampa. A Térmica 2 fecha em zero. Nenhum gerador perde dinheiro.
+    }
+
+    \vspace{0.7em}
+    \gloss{Eletricidade não tem lixeira. Como não é possível gerar mais do que
+    se consome, o preço negativo em t1 é o sistema dizendo que consumir naquela
+    hora vale 100 R\$/MWh.}
+  \end{column}
+  \end{columns}
+\end{frame}
+
+% =========================================================== 5. caso B
+\begin{frame}
+  \framesubtitle{Caso B \ \textbullet\ \ com uma bateria de 1 \nocaps{MWh}}
+  \frametitle{A bateria compra a $-$100, vende a $+$300 e ganha 400.}
+
+  \begin{columns}[T,onlytextwidth]
+  \begin{column}{0.635\textwidth}
+    \vspace{0.9em}
+    {\tabfont
+    \setlength{\tabcolsep}{4.0pt}
+    \renewcommand{\arraystretch}{1.19}
+    \begin{tabular}{l r r @{\hspace{1.1em}} r r r}
+      \toprule
+       & \textbf{t1} & \textbf{t2} & \textbf{Receita} & \textbf{Custo} & \textbf{Lucro} \\
+      \midrule
+      Demanda        & 100 & 130 & $-$29.000 & & \\
+      Térmica 1      & 101 & 126 & 27.700 & 22.700 & 5.000 \\
+      Térmica 2      & 0   & 3   & 900    & 900    & 0 \\
+      Bateria        & \hg{$-$1} & \hg{$+$1} & \hg{400} & \hg{0} & \hg{400} \\
+      \addlinespace[0.1em]\midrule
+      Custo da hora  & 10.100 & 13.500 & & & \\
+      Preço spot     & \hl{$-$100} & \textbf{300} & & & \\
+      \addlinespace[0.1em]\midrule
+      \textbf{Soma}  & & & \textbf{0} & \textbf{23.600} & \textbf{5.400} \\
+      \bottomrule
+    \end{tabular}}
+
+    \vspace{0.8em}
+    \gloss{A bateria carrega 1 MWh em t1, quando o preço é $-$100, e por isso
+    recebe 100 para consumir. Descarrega o mesmo 1 MWh em t2 e vende a 300.
+    Receita de 400 e custo zero. Os preços não se alteram, porque as máquinas
+    na margem continuam as mesmas.}
+  \end{column}
+
+  \begin{column}{0.335\textwidth}
+    \vspace{0.9em}
+    \panel{%
+      \fontsize{8.2}{10.6}\selectfont
+      \textbf{O modelo com a bateria}\par
+      \vspace{0.55em}
+      $\displaystyle\min_{g,\,e\,\ge\,0}\ \sum_{t}\sum_{i} c_i\,g_{i,t}$\par
+      \vspace{0.55em}
+      sujeito a\par
+      \vspace{0.30em}
+      $\textstyle\sum_i g_{i,1} = d_1 + e \quad (\lambda_1)$\par
+      \vspace{0.42em}
+      $\textstyle\sum_i g_{i,2} + e = d_2 \quad (\lambda_2)$\par
+      \vspace{0.42em}
+      $g_{i,2}-g_{i,1} \le R \quad (\mu_i)$\par
+      \vspace{0.42em}
+      $e \le E \quad (\beta)$\par
+      \vspace{0.62em}
+      \gloss{$e$ é a energia deslocada de t1 para t2, com $E = 1$ MWh e 100\% de
+      eficiência. A dual da capacidade é a diferença de preços, \mbox{$\beta = 400$}.}
+    }
+  \end{column}
+  \end{columns}
+\end{frame}
+
+% =========================================================== 6. comparacao
+\begin{frame}
+  \framesubtitle{Os dois casos lado a lado}
+  \frametitle{O lucro da bateria é a economia que ela gera para o sistema.}
+
+  \vspace{0.7em}
+  \centering
+  {\tabfont
+  \setlength{\tabcolsep}{5pt}
+  \renewcommand{\arraystretch}{1.26}
+  \begin{tabular}{l r r r @{\hspace{1.5em}} r r r}
+    \toprule
+     & \multicolumn{3}{c}{\textbf{Sem bateria}} & \multicolumn{3}{c}{\textbf{Com bateria}} \\
+    \cmidrule(r){2-4}\cmidrule(l){5-7}
+     & Receita & Custo & Lucro & Receita & Custo & Lucro \\
+    \midrule
+    Térmica 1     & 27.500 & 22.500 & 5.000 & 27.700 & 22.700 & 5.000 \\
+    Térmica 2     & 1.500  & 1.500  & 0     & 900    & 900    & 0 \\
+    Bateria       &        &        &       & \hg{400} & \hg{0} & \hg{400} \\
+    Consumidores  & $-$29.000 & & & $-$29.000 & & \\
+    \addlinespace[0.1em]\midrule
+    \textbf{Soma} & \textbf{0} & \textbf{24.000} & \textbf{5.000}
+                  & \textbf{0} & \textbf{23.600} & \textbf{5.400} \\
+    \bottomrule
+  \end{tabular}}
+
+  \vspace{1.2em}
+  \begin{columns}[T,onlytextwidth]
+  \begin{column}{0.305\textwidth}
+    \panel{\centering\fontsize{8.2}{10.4}\selectfont
+      Economia de operação\par\vspace{0.25em}
+      {\fontsize{11}{12}\selectfont\bfseries 24.000 $\rightarrow$ 23.600}\par
+      \vspace{0.15em}\hg{$-$400 R\$}}
+  \end{column}
+  \begin{column}{0.305\textwidth}
+    \panel{\centering\fontsize{8.2}{10.4}\selectfont
+      Lucro da bateria\par\vspace{0.25em}
+      {\fontsize{11}{12}\selectfont\bfseries 400 $-$ 0}\par
+      \vspace{0.15em}\hg{$+$400 R\$}}
+  \end{column}
+  \begin{column}{0.305\textwidth}
+    \panel{\centering\fontsize{8.2}{10.4}\selectfont
+      Pago pelos consumidores\par\vspace{0.25em}
+      {\fontsize{11}{12}\selectfont\bfseries 29.000 $=$ 29.000}\par
+      \vspace{0.15em}\hg{sem variação}}
+  \end{column}
+  \end{columns}
+\end{frame}
+
+% =========================================================== 7. saturacao
+\begin{frame}
+  \framesubtitle{Quanto construir}
+  \frametitle{A renda da bateria é renda de escassez, e some aos 2,5 MWh.}
+
+  \begin{columns}[T,onlytextwidth]
+  \begin{column}{0.60\textwidth}
+    \vspace{1.1em}
+    {\tabfont
+    \setlength{\tabcolsep}{4.0pt}
+    \renewcommand{\arraystretch}{1.26}
+    \begin{tabular}{l r r r r}
+      \toprule
+      \textbf{Bateria} & \textbf{Custo} & \textbf{Preço} & \textbf{Preço}
+        & \textbf{Valor} \\
+      \textbf{instalada} & \textbf{total} & \textbf{t1} & \textbf{t2}
+        & \textbf{marginal} \\
+      \midrule
+      0 MWh           & 24.000 & $-$100 & 300 & 400 \\
+      1 MWh           & 23.600 & $-$100 & 300 & 400 \\
+      2 MWh           & 23.200 & $-$100 & 300 & 400 \\
+      \addlinespace[0.12em]
+      2,5 MWh ou mais & 23.000 & \hg{100} & \hg{100} & \hg{0} \\
+      \bottomrule
+    \end{tabular}}
+
+    \vspace{0.8em}
+    \gloss{Custo total em R\$; preços e valor marginal em R\$/MWh. O valor
+    marginal é quanto vale, para o sistema, o próximo MWh de bateria.}
+  \end{column}
+
+  \begin{column}{0.37\textwidth}
+    \vspace{1.1em}
+    {\fontsize{9.0}{12.0}\selectfont
+    Com 2,5 MWh de armazenamento a rampa deixa de amarrar, a térmica cara sai do
+    despacho e as duas horas passam a valer 100 R\$/MWh. Daí em diante, o MWh
+    seguinte de bateria vale zero.\par}
+
+    \vspace{1.25em}
+    \thesis{\fontsize{8.8}{11.4}\selectfont
+      O mesmo preço que remunera a primeira bateria informa quando a próxima
+      deixa de ser necessária. É assim que o preço conecta o mercado, e os
+      incentivos que ele cria, às necessidades de quem opera o sistema.}
+  \end{column}
+  \end{columns}
+\end{frame}
+

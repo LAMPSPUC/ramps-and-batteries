@@ -1,0 +1,1405 @@
+<meta charset="utf-8">
+<title>Quando o preço diz a verdade</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;700&display=swap">
+
+<style>
+/* ---------- tokens: complete light palette on bare :root ---------- */
+:root{
+  --paper:#F4F6F7;
+  --card:#FFFFFF;
+  --ink:#0F1A20;
+  --muted:#5B6B74;
+  --faint:#8C9AA1;
+  --line:#DBE1E4;
+  --hair:#EBEFF1;
+  --scarce:#A61B2B;
+  --value:#0A6C63;
+  --panel:#EFF2F3;
+  --shadow:0 1px 2px rgba(15,26,32,.05), 0 12px 32px -18px rgba(15,26,32,.28);
+  --sans:"IBM Plex Sans","Noto Sans SC",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --display:Archivo,"IBM Plex Sans","Noto Sans SC",sans-serif;
+  --mono:"IBM Plex Mono","Noto Sans SC",ui-monospace,SFMono-Regular,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0C1216; --card:#131C21; --ink:#E7EDEF; --muted:#9BABB3; --faint:#6F818A;
+    --line:#26333A; --hair:#1C272D; --scarce:#EE7A80; --value:#5CC9B8; --panel:#18232A;
+    --shadow:0 1px 2px rgba(0,0,0,.35), 0 14px 36px -20px rgba(0,0,0,.75);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0C1216; --card:#131C21; --ink:#E7EDEF; --muted:#9BABB3; --faint:#6F818A;
+  --line:#26333A; --hair:#1C272D; --scarce:#EE7A80; --value:#5CC9B8; --panel:#18232A;
+  --shadow:0 1px 2px rgba(0,0,0,.35), 0 14px 36px -20px rgba(0,0,0,.75);
+}
+
+*{box-sizing:border-box}
+body{
+  background:var(--paper);color:var(--ink);font-family:var(--sans);
+  font-size:17px;line-height:1.55;margin:0;
+  padding:clamp(16px,3.4vw,48px) clamp(12px,3vw,32px) 96px;
+  -webkit-font-smoothing:antialiased;
+}
+.deck{max-width:1120px;margin:0 auto;display:flex;flex-direction:column;gap:clamp(18px,2.6vw,34px)}
+
+/* ---------- language + theme controls ---------- */
+.controls{
+  position:sticky;top:10px;z-index:20;align-self:flex-end;
+  display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;
+}
+.seg{
+  display:flex;align-items:stretch;
+  background:var(--card);border:1px solid var(--line);border-radius:2px;
+  box-shadow:var(--shadow);overflow:hidden;
+}
+.seg button{
+  font-family:var(--mono);font-size:11.5px;font-weight:500;letter-spacing:.08em;
+  color:var(--muted);background:none;border:0;border-right:1px solid var(--line);
+  padding:7px 13px 6px;cursor:pointer;line-height:1.4;
+  border-bottom:2px solid transparent;
+}
+.seg button:last-child{border-right:0}
+.seg button:hover{color:var(--ink)}
+.seg button[aria-pressed="true"]{color:var(--ink);border-bottom-color:var(--scarce)}
+.seg button:focus-visible{outline:2px solid var(--scarce);outline-offset:-2px}
+
+/* ---------- slide shell ---------- */
+.slide{
+  background:var(--card);border:1px solid var(--line);border-radius:3px;
+  box-shadow:var(--shadow);
+  padding:clamp(26px,3.6vw,52px) clamp(22px,3.6vw,54px) clamp(30px,3.6vw,52px);
+  position:relative;display:flex;flex-direction:column;aspect-ratio:16/9;
+}
+@media (max-width:820px){.slide{aspect-ratio:auto}}
+.slide::after{
+  content:attr(data-n);position:absolute;
+  right:clamp(18px,2.4vw,30px);bottom:clamp(14px,1.8vw,22px);
+  font-family:var(--mono);font-size:11px;color:var(--faint);
+}
+.nocaps{text-transform:none}
+.eyebrow{
+  font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--scarce);margin:0 0 10px;
+}
+h2{
+  font-family:var(--display);font-weight:800;
+  font-size:clamp(22px,2.7vw,33px);line-height:1.16;letter-spacing:-.017em;
+  text-wrap:balance;margin:0 0 clamp(16px,2vw,22px);
+}
+h2::after{content:"";display:block;height:1px;background:var(--line);margin-top:clamp(14px,1.8vw,20px)}
+.cols{display:grid;gap:clamp(20px,3vw,42px);align-items:start}
+.slide > .cols.a,.slide > .cols.b,.slide > .cols.c{flex:1;align-content:center}
+.cols.a{grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr)}
+.cols.b{grid-template-columns:minmax(0,1.9fr) minmax(0,1fr)}
+.cols.c{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr)}
+.cols.three{grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(12px,1.6vw,20px)}
+@media (max-width:820px){.cols{grid-template-columns:minmax(0,1fr)!important}}
+
+/* ---------- text ---------- */
+p{margin:0 0 .85em;max-width:64ch}
+p:last-child{margin-bottom:0}
+.lead{font-size:clamp(15px,1.35vw,17px);color:var(--ink)}
+.gloss{font-size:13.5px;line-height:1.62;color:var(--muted);max-width:70ch}
+ul.facts{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.7em}
+ul.facts li{position:relative;padding-left:1.15em;font-size:16.5px}
+ul.facts li::before{content:"";position:absolute;left:0;top:.58em;width:5px;height:5px;background:var(--scarce)}
+strong{font-weight:600}
+.neg{color:var(--scarce);font-weight:600}
+.pos{color:var(--value);font-weight:600}
+
+/* ---------- tables ---------- */
+.tw{overflow-x:auto;margin:0 0 clamp(14px,1.8vw,20px)}
+table{
+  border-collapse:collapse;width:100%;min-width:440px;
+  font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:14px;color:inherit;
+}
+th,td{padding:7px 10px;text-align:right;white-space:nowrap}
+th:first-child,td:first-child{text-align:left;font-family:var(--sans);white-space:nowrap;padding-left:0}
+thead th{
+  font-weight:600;font-size:11px;letter-spacing:.055em;text-transform:uppercase;
+  color:var(--muted);border-bottom:1px solid var(--ink);padding-bottom:8px;
+}
+thead tr:first-child th:first-child{border-bottom:none}
+thead th.grp{
+  font-family:var(--sans);text-transform:none;letter-spacing:0;
+  font-size:12.5px;color:var(--ink);text-align:center;border-bottom:1px solid var(--line);
+}
+tbody td{border-bottom:1px solid var(--hair)}
+tr.rule td{border-bottom:1px solid var(--line)}
+tr.sum td{border-top:1px solid var(--ink);border-bottom:none;font-weight:600;padding-top:9px}
+tr.bat td{color:var(--value)}
+td.gap,th.gap{padding-left:26px}
+caption{caption-side:bottom;text-align:left;padding-top:12px;font:400 12.5px/1.6 var(--sans);color:var(--muted)}
+
+/* ---------- panels ---------- */
+.panel{background:var(--panel);border-radius:2px;padding:clamp(16px,1.9vw,22px)}
+.panel h3{font-family:var(--sans);font-size:14px;font-weight:600;margin:0 0 .7em}
+.panel + .panel{margin-top:14px}
+.panel .gloss{font-size:13px}
+.thesis{border-top:2px solid var(--scarce);padding-top:calc(clamp(16px,1.9vw,22px) - 2px)}
+.eqs{
+  display:grid;grid-template-columns:auto auto auto;justify-content:start;
+  gap:.55em 1.7em;align-items:baseline;font-family:var(--mono);font-size:15px;
+  margin-bottom:clamp(20px,2.4vw,30px);
+}
+.eqs sub{font-size:.7em}
+.pbody{font-size:15px}
+ul.pfacts li{font-size:15px}
+.model{font-family:var(--mono);font-size:13.5px;line-height:1.5}
+.model .obj{display:block;margin-bottom:.85em}
+.model .sub{font-family:var(--sans);font-size:12px;color:var(--muted);display:block;margin-bottom:.5em}
+.model .row{display:flex;justify-content:space-between;gap:14px;padding:.28em 0}
+.model .dual{color:var(--scarce);font-weight:500}
+.stat{background:var(--panel);border-radius:2px;padding:16px 18px;text-align:center}
+.stat .k{font-family:var(--sans);font-size:12px;color:var(--muted);display:block;margin-bottom:.45em}
+.stat .v{font-family:var(--mono);font-size:clamp(15px,1.7vw,19px);font-weight:500;display:block}
+.stat .d{font-family:var(--mono);font-size:12.5px;font-weight:600;color:var(--value);display:block;margin-top:.3em}
+
+/* ---------- cover ---------- */
+.cover{padding-top:clamp(44px,6vw,88px);padding-bottom:clamp(44px,6vw,88px)}
+.cover .bar{width:56px;height:3px;background:var(--scarce);margin-bottom:clamp(22px,3vw,34px)}
+.cover h1{
+  font-family:var(--display);font-weight:800;
+  font-size:clamp(32px,5.1vw,60px);line-height:1.03;letter-spacing:-.028em;
+  margin:0 0 .28em;text-wrap:balance;
+}
+.cover .sub{font-size:clamp(16px,1.9vw,22px);color:var(--muted);margin:0 0 clamp(24px,3vw,36px);font-weight:400}
+.cover .stand{max-width:56ch;font-size:clamp(14px,1.35vw,16px)}
+.cover .by{margin-top:auto;padding-top:clamp(28px,3.6vw,46px);font-family:var(--mono);font-size:12px;color:var(--faint);letter-spacing:.045em}
+
+/* ---------- figure ---------- */
+svg.fig{width:100%;height:auto;display:block}
+.fig .ax{stroke:var(--line);stroke-width:1;fill:none}
+.fig .dem{stroke:var(--ink);stroke-width:3;fill:none;stroke-linecap:square}
+.fig .ramp{stroke:var(--scarce);stroke-width:1.5;stroke-dasharray:5 4;fill:none}
+.fig .brk{stroke:var(--scarce);stroke-width:1.4;fill:none}
+.fig .arw{stroke:var(--faint);stroke-width:1.4;fill:none}
+.fig text{font-family:var(--sans);fill:var(--muted);font-size:11px}
+.fig text.big{fill:var(--ink);font-weight:600;font-size:12.5px}
+.fig text.acc{fill:var(--scarce)}
+.fig text.accb{fill:var(--scarce);font-weight:600;font-size:12.5px}
+.fig text.tick{fill:var(--faint);font-size:10px;font-family:var(--mono)}
+
+/* ---------- CJK adjustments ---------- */
+:root[data-lang="zh"] body{line-height:1.75}
+:root[data-lang="zh"] .eyebrow{letter-spacing:.06em}
+:root[data-lang="zh"] h2{letter-spacing:0;font-size:clamp(21px,2.5vw,30px);font-weight:700}
+:root[data-lang="zh"] .cover h1{letter-spacing:0;font-weight:700;font-size:clamp(30px,4.6vw,54px)}
+:root[data-lang="zh"] thead th{letter-spacing:.02em}
+:root[data-lang="zh"] .gloss,:root[data-lang="zh"] caption{line-height:1.72}
+:root[data-lang="zh"] caption{padding-top:10px}
+:root[data-lang="zh"] .stat{padding:12px 16px}
+:root[data-lang="zh"] .stat .k{margin-bottom:.3em}
+:root[data-lang="zh"] th,:root[data-lang="zh"] td{padding-top:6px;padding-bottom:6px}
+
+@media print{
+  /* impressao sempre na paleta clara, mesmo com o leitor em modo escuro */
+  :root, :root:not([data-theme="light"]), :root[data-theme="dark"]{
+    --paper:#FFFFFF; --card:#FFFFFF; --ink:#0F1A20; --muted:#5B6B74; --faint:#8C9AA1;
+    --line:#DBE1E4; --hair:#EBEFF1; --scarce:#A61B2B; --value:#0A6C63; --panel:#EFF2F3;
+    --shadow:none;
+  }
+  body{background:#fff;padding:0;color:var(--ink)}
+  .deck{gap:0;max-width:none}
+  .controls{display:none}
+  .slide{border:none;box-shadow:none;border-radius:0;page-break-after:always;min-height:100vh;justify-content:center}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+<style>
+/* ---------- Caso Brasil: controles e indicadores ---------- */
+.ctl{background:var(--panel);border-radius:2px;padding:9px 13px}
+.ctl label{display:flex;justify-content:space-between;align-items:baseline;gap:10px;
+  font-family:var(--sans);font-size:12px;color:var(--muted);margin-bottom:.25em}
+.ctl label b{font-family:var(--mono);font-size:13.5px;color:var(--ink);font-weight:600}
+.ctl input[type=range]{width:100%;accent-color:var(--scarce);margin:0;cursor:pointer}
+.ctl input[type=range]:focus-visible{outline:2px solid var(--scarce);outline-offset:3px}
+.ind{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;margin-top:10px;
+  background:var(--line);border:1px solid var(--line);border-radius:2px;overflow:hidden}
+.ind > div{background:var(--card);padding:7px 9px}
+.ind .k{display:block;font-family:var(--sans);font-size:10.5px;color:var(--muted);
+  line-height:1.3;margin-bottom:.3em}
+.ind .v{display:block;font-family:var(--mono);font-size:14px;font-weight:600;
+  font-variant-numeric:tabular-nums}
+svg.stackfig,svg.dayfig{width:100%;height:auto}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:.6em;
+  font-family:var(--sans);font-size:11px;color:var(--muted)}
+.legend > span{display:flex;align-items:center;gap:5px}
+.legend .sw{width:12px;height:9px;display:inline-block;border-radius:1px;flex:none}
+.legend .sw.fix{background:var(--faint);opacity:.45}
+.legend .sw.hyd{background:var(--value);opacity:.30}
+.legend .sw.thm{background:var(--scarce);opacity:.28}
+.legend .sw.ln{height:0;border-top:1.5px dashed var(--ink);width:14px}
+.legend .sw.pr{height:0;border-top:2px solid var(--scarce);width:14px}
+.legend .sw.l1{height:0;border-top:2.4px solid var(--ink);width:14px}
+.legend .sw.l2{height:0;border-top:1.3px solid var(--faint);width:14px}
+.legend .sw.l3{height:0;border-top:1.6px solid var(--value);width:14px}
+.legend .sw.bar{background:var(--scarce);opacity:.35;height:10px;width:8px}
+.lbl{font-family:var(--mono);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--faint);margin:.85em 0 .3em}
+.dayfig .mcbar{fill:var(--scarce);opacity:.17}
+.dayfig text.r{fill:var(--scarce)}
+.dayfig .ln1{fill:none;stroke:var(--ink);stroke-width:2.4}
+.dayfig .ln2{fill:none;stroke:var(--faint);stroke-width:1.3}
+.dayfig .ln3{fill:none;stroke:var(--value);stroke-width:1.6}
+.dayfig .vt{stroke:var(--ink);stroke-width:1;stroke-dasharray:3 3}
+.dayfig .dot{fill:var(--card);stroke:var(--ink);stroke-width:2}
+#s8 table{min-width:0;font-size:13px}
+#s9 table.rev{min-width:0;font-size:11px}
+#s9 table.rev th{font-size:8.5px;letter-spacing:.03em;padding-bottom:4px}
+#s9 table.rev th.grp{font-size:10.5px}
+#s9 table.rev th.unit{font-size:8.5px;color:var(--faint);text-align:left;border-bottom:none}
+#s9 table.rev th,#s9 table.rev td{padding:2.5px 4px;white-space:nowrap;line-height:1.35}
+#s9 table.rev td:first-child{font-size:10.5px}
+#s9 table.rev td.gap,#s9 table.rev th.gap{padding-left:12px}
+#s9 #brCap{font-size:10.5px;line-height:1.45}
+#s8 td:first-child{white-space:normal}
+#s8 th,#s8 td{padding:5.5px 7px}
+#s8 .gloss{font-size:12px;line-height:1.55}
+#s9 .gloss{font-size:11.5px;line-height:1.5}
+#s9 .legend{font-size:10.5px;gap:3px 12px}
+#s8 .panel,#s9 .panel{padding:13px 15px}
+#s8 .pbody,#s9 .pbody{font-size:13px;line-height:1.5}
+#s9 .panel{padding:14px 16px}
+#s9 .pbody{font-size:14px}
+.stackfig .band{stroke:none}
+.stackfig .fix{fill:var(--faint);opacity:.42}
+.stackfig .hyd{fill:var(--value);opacity:.28}
+.stackfig .thm{fill:var(--scarce);opacity:.26}
+.stackfig .chip{fill:var(--scarce)}
+.stackfig text.chipt{fill:#fff;font-family:var(--mono);font-size:10px;font-weight:600}
+.stackfig .edge{fill:none;stroke:var(--ink);stroke-width:1.4;stroke-linejoin:round}
+.stackfig .dem{stroke:var(--ink);stroke-width:1.3;stroke-dasharray:4 3;fill:none}
+.stackfig .plv{stroke:var(--scarce);stroke-width:1.6;fill:none}
+.stackfig text{font-family:var(--sans);fill:var(--muted);font-size:10.5px}
+.stackfig text.b{fill:var(--ink);font-weight:600;font-size:11px}
+.stackfig text.p{fill:var(--scarce);font-weight:600;font-size:11px;font-family:var(--mono)}
+:root[data-lang="zh"] .ind .k{font-size:10px}
+@media (max-width:820px){.ind{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
+
+<div class="deck">
+
+<div class="controls">
+  <nav class="seg" aria-label="Language">
+    <button type="button" data-lang="en">EN</button>
+    <button type="button" data-lang="pt">PT</button>
+    <button type="button" data-lang="es">ES</button>
+    <button type="button" data-lang="zh" lang="zh-CN">中文</button>
+  </nav>
+  <nav class="seg" aria-label="Theme">
+    <button type="button" data-theme-set="light" title="Light">&#9788;</button>
+    <button type="button" data-theme-set="dark" title="Dark">&#9790;</button>
+    <button type="button" data-theme-set="auto" title="System">AUTO</button>
+  </nav>
+</div>
+
+<!-- ============================================ 1 -->
+<section class="slide cover" id="s1">
+  <div class="bar"></div>
+  <h1 data-t="c.title"></h1>
+  <p class="sub" data-t="c.sub"></p>
+  <p class="stand" data-t="c.stand"></p>
+  <div class="by" data-t="c.by"></div>
+</section>
+
+<!-- ============================================ 2 -->
+<section class="slide" data-n="2" id="s2">
+  <p class="eyebrow" data-t="s2.eye"></p>
+  <h2 data-t="s2.h"></h2>
+  <div class="cols a">
+    <div>
+      <ul class="facts">
+        <li data-t="s2.b1"></li>
+        <li data-t="s2.b2"></li>
+        <li data-t="s2.b3"></li>
+        <li data-t="s2.b4"></li>
+      </ul>
+      <p class="gloss" style="margin-top:1.6em" data-t="s2.gloss"></p>
+    </div>
+    <div>
+      <svg class="fig" viewBox="0 0 530 245" role="img" data-alt="fig.alt">
+        <line class="ax" x1="44" y1="30" x2="44" y2="205"/>
+        <line class="ax" x1="44" y1="205" x2="440" y2="205"/>
+        <line class="ax" x1="39" y1="180" x2="44" y2="180"/>
+        <line class="ax" x1="39" y1="80"  x2="44" y2="80"/>
+        <line class="ax" x1="39" y1="58"  x2="44" y2="58"/>
+        <text class="tick" x="34" y="184" text-anchor="end">100</text>
+        <text class="tick" x="34" y="84"  text-anchor="end">125</text>
+        <text class="tick" x="34" y="62"  text-anchor="end">130</text>
+        <line class="dem" x1="76" y1="180" x2="184" y2="180"/>
+        <text class="big" x="130" y="169" text-anchor="middle">100 MWh</text>
+        <line class="dem" x1="266" y1="58" x2="374" y2="58"/>
+        <text class="big" x="320" y="47" text-anchor="middle">130 MWh</text>
+        <line class="ramp" x1="266" y1="80" x2="374" y2="80"/>
+        <text class="acc" x="320" y="96" text-anchor="middle" style="font-size:10.5px">125 = 100 + 25</text>
+        <path class="brk" d="M386 58 h10 M386 80 h10 M391 58 v22"/>
+        <text class="accb" x="402" y="63">5 MWh</text>
+        <text class="acc" x="402" y="78" style="font-size:10px" data-t="fig.gap2"></text>
+        <path class="arw" d="M188 177 L262 83"/>
+        <path class="arw" d="M262 83 l-9 1 M262 83 l1 9"/>
+        <text x="214" y="118" text-anchor="end" data-t="fig.rmax"></text>
+        <text x="214" y="131" text-anchor="end">25 MWh/h</text>
+        <text x="130" y="224" text-anchor="middle">t1</text>
+        <text x="320" y="224" text-anchor="middle">t2</text>
+      </svg>
+      <p class="gloss" style="text-align:center;margin-top:.9em" data-t="s2.axis"></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================ 3 -->
+<section class="slide" data-n="3" id="s3">
+  <p class="eyebrow" data-t="s3.eye"></p>
+  <h2 data-t="s3.h"></h2>
+  <div class="cols b">
+    <div>
+      <div class="tw">
+        <table>
+          <thead><tr>
+            <th></th><th>t1</th><th>t2</th>
+            <th class="gap" data-t="t.rev"></th><th data-t="t.cost"></th><th data-t="t.profit"></th>
+          </tr></thead>
+          <tbody>
+            <tr><td data-t="t.demand"></td><td data-v="100"></td><td data-v="130"></td><td class="gap neg" data-v="-29000"></td><td></td><td></td></tr>
+            <tr><td data-t="t.th1"></td><td data-v="100"></td><td data-v="125"></td><td class="gap" data-v="27500"></td><td data-v="22500"></td><td data-v="5000"></td></tr>
+            <tr class="rule"><td data-t="t.th2"></td><td data-v="0"></td><td data-v="5"></td><td class="gap" data-v="1500"></td><td data-v="1500"></td><td data-v="0"></td></tr>
+            <tr><td data-t="t.hcost"></td><td data-v="10000"></td><td data-v="14000"></td><td class="gap"></td><td></td><td></td></tr>
+            <tr class="rule"><td data-t="t.spot"></td><td class="neg" data-v="-100"></td><td><strong data-v="300"></strong></td><td class="gap"></td><td></td><td></td></tr>
+            <tr class="sum"><td data-t="t.sum"></td><td></td><td></td><td class="gap" data-v="0"></td><td data-v="24000"></td><td data-v="5000"></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="gloss" data-t="s3.gloss"></p>
+    </div>
+    <div class="panel">
+      <h3 data-t="s3.model"></h3>
+      <div class="model">
+        <span class="obj">min<sub>g &ge; 0</sub> &nbsp; &Sigma;<sub>t</sub> &Sigma;<sub>i</sub> c<sub>i</sub> g<sub>i,t</sub></span>
+        <span class="sub" data-t="st"></span>
+        <div class="row"><span>&Sigma;<sub>i</sub> g<sub>i,t</sub> = d<sub>t</sub></span><span class="dual">(&lambda;<sub>t</sub>)</span></div>
+        <div class="row"><span>g<sub>i,2</sub> &minus; g<sub>i,1</sub> &le; R</span><span class="dual">(&mu;<sub>i</sub>)</span></div>
+      </div>
+      <p class="gloss" style="margin-top:1.1em" data-t="s3.mgloss"></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================ 4 -->
+<section class="slide" data-n="4" id="s4">
+  <p class="eyebrow" data-t="s4.eye"></p>
+  <h2 data-t="s4.h"></h2>
+  <div class="cols a">
+    <div>
+      <div class="eqs">
+        <span>&mu;<sub>1</sub></span><span>= c<sub>2</sub> &minus; c<sub>1</sub></span><span class="neg">= 200</span>
+        <span>&lambda;<sub>1</sub></span><span>= c<sub>1</sub> &minus; &mu;<sub>1</sub></span><span class="neg">= &minus;100</span>
+        <span>&lambda;<sub>2</sub></span><span>= c<sub>1</sub> + &mu;<sub>1</sub></span><span class="neg">= +300</span>
+        <span>&lambda;<sub>2</sub> &minus; &lambda;<sub>1</sub></span><span>= 2 (c<sub>2</sub> &minus; c<sub>1</sub>)</span><span class="pos">= 400</span>
+      </div>
+      <ul class="facts pfacts">
+        <li data-t="s4.b1"></li>
+        <li data-t="s4.b2"></li>
+        <li data-t="s4.b3"></li>
+        <li data-t="s4.b4"></li>
+      </ul>
+    </div>
+    <div>
+      <div class="panel">
+        <h3 data-t="s4.p1h"></h3>
+        <p class="pbody" data-t="s4.p1"></p>
+      </div>
+      <div class="panel">
+        <h3 data-t="s4.p2h"></h3>
+        <p class="pbody" data-t="s4.p2"></p>
+      </div>
+      <p class="gloss" style="margin-top:1.2em" data-t="s4.gloss"></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================ 5 -->
+<section class="slide" data-n="5" id="s5">
+  <p class="eyebrow" data-t="s5.eye"></p>
+  <h2 data-t="s5.h"></h2>
+  <div class="cols b">
+    <div>
+      <div class="tw">
+        <table>
+          <thead><tr>
+            <th></th><th>t1</th><th>t2</th>
+            <th class="gap" data-t="t.rev"></th><th data-t="t.cost"></th><th data-t="t.profit"></th>
+          </tr></thead>
+          <tbody>
+            <tr><td data-t="t.demand"></td><td data-v="100"></td><td data-v="130"></td><td class="gap neg" data-v="-29000"></td><td></td><td></td></tr>
+            <tr><td data-t="t.th1"></td><td data-v="101"></td><td data-v="126"></td><td class="gap" data-v="27700"></td><td data-v="22700"></td><td data-v="5000"></td></tr>
+            <tr><td data-t="t.th2"></td><td data-v="0"></td><td data-v="3"></td><td class="gap" data-v="900"></td><td data-v="900"></td><td data-v="0"></td></tr>
+            <tr class="rule bat"><td data-t="t.bat"></td><td data-v="-1"></td><td data-v="1" data-plus="1"></td><td class="gap" data-v="400"></td><td data-v="0"></td><td data-v="400"></td></tr>
+            <tr><td data-t="t.hcost"></td><td data-v="10100"></td><td data-v="13500"></td><td class="gap"></td><td></td><td></td></tr>
+            <tr class="rule"><td data-t="t.spot"></td><td class="neg" data-v="-100"></td><td><strong data-v="300"></strong></td><td class="gap"></td><td></td><td></td></tr>
+            <tr class="sum"><td data-t="t.sum"></td><td></td><td></td><td class="gap" data-v="0"></td><td data-v="23600"></td><td data-v="5400"></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="gloss" data-t="s5.gloss"></p>
+    </div>
+    <div class="panel">
+      <h3 data-t="s5.model"></h3>
+      <div class="model">
+        <span class="obj">min<sub>g, e &ge; 0</sub> &nbsp; &Sigma;<sub>t</sub> &Sigma;<sub>i</sub> c<sub>i</sub> g<sub>i,t</sub></span>
+        <span class="sub" data-t="st"></span>
+        <div class="row"><span>&Sigma;<sub>i</sub> g<sub>i,1</sub> = d<sub>1</sub> + e</span><span class="dual">(&lambda;<sub>1</sub>)</span></div>
+        <div class="row"><span>&Sigma;<sub>i</sub> g<sub>i,2</sub> + e = d<sub>2</sub></span><span class="dual">(&lambda;<sub>2</sub>)</span></div>
+        <div class="row"><span>g<sub>i,2</sub> &minus; g<sub>i,1</sub> &le; R</span><span class="dual">(&mu;<sub>i</sub>)</span></div>
+        <div class="row"><span>e &le; E</span><span class="dual">(&beta;)</span></div>
+      </div>
+      <p class="gloss" style="margin-top:1.1em" data-t="s5.mgloss"></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================ 6 -->
+<section class="slide" data-n="6" id="s6">
+  <p class="eyebrow" data-t="s6.eye"></p>
+  <h2 data-t="s6.h"></h2>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr>
+          <th></th>
+          <th class="grp" colspan="3" data-t="s6.g1"></th>
+          <th class="grp gap" colspan="3" data-t="s6.g2"></th>
+        </tr>
+        <tr>
+          <th></th><th data-t="t.rev"></th><th data-t="t.cost"></th><th data-t="t.profit"></th>
+          <th class="gap" data-t="t.rev"></th><th data-t="t.cost"></th><th data-t="t.profit"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td data-t="t.th1"></td><td data-v="27500"></td><td data-v="22500"></td><td data-v="5000"></td><td class="gap" data-v="27700"></td><td data-v="22700"></td><td data-v="5000"></td></tr>
+        <tr><td data-t="t.th2"></td><td data-v="1500"></td><td data-v="1500"></td><td data-v="0"></td><td class="gap" data-v="900"></td><td data-v="900"></td><td data-v="0"></td></tr>
+        <tr class="bat"><td data-t="t.bat"></td><td></td><td></td><td></td><td class="gap" data-v="400"></td><td data-v="0"></td><td data-v="400"></td></tr>
+        <tr class="rule"><td data-t="t.consumers"></td><td class="neg" data-v="-29000"></td><td></td><td></td><td class="gap neg" data-v="-29000"></td><td></td><td></td></tr>
+        <tr class="sum"><td data-t="t.sum"></td><td data-v="0"></td><td data-v="24000"></td><td data-v="5000"></td><td class="gap" data-v="0"></td><td data-v="23600"></td><td data-v="5400"></td></tr>
+      </tbody>
+      <caption data-t="s6.cap"></caption>
+    </table>
+  </div>
+  <div class="cols three" style="margin-top:clamp(16px,2.2vw,26px)">
+    <div class="stat"><span class="k" data-t="s6.k1"></span><span class="v" data-t="s6.v1"></span><span class="d" data-t="s6.d1"></span></div>
+    <div class="stat"><span class="k" data-t="s6.k2"></span><span class="v" data-t="s6.v2"></span><span class="d" data-t="s6.d2"></span></div>
+    <div class="stat"><span class="k" data-t="s6.k3"></span><span class="v" data-t="s6.v3"></span><span class="d" data-t="s6.d3"></span></div>
+  </div>
+</section>
+
+<!-- ============================================ 7 -->
+<section class="slide" data-n="7" id="s7">
+  <p class="eyebrow" data-t="s7.eye"></p>
+  <h2 data-t="s7.h"></h2>
+  <div class="cols c">
+    <div>
+      <div class="tw">
+        <table>
+          <thead><tr>
+            <th data-t="s7.c1"></th><th data-t="s7.c2"></th><th data-t="s7.c3"></th><th data-t="s7.c4"></th><th data-t="s7.c5"></th>
+          </tr></thead>
+          <tbody>
+            <tr><td>0 MWh</td><td data-v="24000"></td><td class="neg" data-v="-100"></td><td data-v="300"></td><td data-v="400"></td></tr>
+            <tr><td>1 MWh</td><td data-v="23600"></td><td class="neg" data-v="-100"></td><td data-v="300"></td><td data-v="400"></td></tr>
+            <tr><td>2 MWh</td><td data-v="23200"></td><td class="neg" data-v="-100"></td><td data-v="300"></td><td data-v="400"></td></tr>
+            <tr class="bat"><td data-t="s7.r4"></td><td data-v="23000"></td><td data-v="100"></td><td data-v="100"></td><td data-v="0"></td></tr>
+          </tbody>
+          <caption data-t="s7.cap"></caption>
+        </table>
+      </div>
+    </div>
+    <div>
+      <p class="lead" data-t="s7.lead"></p>
+      <div class="panel thesis" style="margin-top:1.4em">
+        <p class="pbody" data-t="s7.thesis"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================ 8  Caso Brasil: a curva do dia -->
+<section class="slide" data-n="8" id="s8">
+  <p class="eyebrow" data-t="b1.eye"></p>
+  <h2 data-t="b1.h"></h2>
+  <div class="cols a">
+    <div>
+      <svg class="fig dayfig" viewBox="0 0 580 240" role="img" data-alt="b1.alt">
+        <g id="d1Ax"></g><g id="d1Curves"></g><g id="d1Marks"></g>
+      </svg>
+      <div class="legend">
+        <span><i class="sw l1"></i><span data-t="b1.k1"></span></span>
+        <span><i class="sw l2"></i><span data-t="b1.k2"></span></span>
+        <span><i class="sw l3"></i><span data-t="b1.k3"></span></span>
+        <span><i class="sw bar"></i><span data-t="b1.k4"></span></span>
+      </div>
+      <p class="gloss" style="margin-top:.45em" data-t="b1.gloss"></p>
+    </div>
+    <div>
+      <div class="tw">
+        <table>
+          <thead><tr>
+            <th></th><th data-t="b1.c1"></th><th data-t="b1.c2"></th><th data-t="b1.c3"></th>
+          </tr></thead>
+          <tbody>
+            <tr><td data-t="b1.r1"></td><td data-v="97168"></td><td data-v="99352"></td><td data-v="2185" data-plus="1"></td></tr>
+            <tr><td data-t="b1.r2"></td><td data-v="41281"></td><td data-v="5464"></td><td class="neg" data-v="-35816" data-plus="1"></td></tr>
+            <tr class="rule"><td data-t="b1.r3"></td><td data-v="28428"></td><td data-v="278"></td><td class="neg" data-v="-28150" data-plus="1"></td></tr>
+            <tr><td data-t="b1.r4"></td><td data-v="41696"></td><td data-v="81048"></td><td data-v="39352" data-plus="1"></td></tr>
+            <tr><td data-t="b1.r5"></td><td data-v="8453"></td><td data-v="12064"></td><td data-v="3611" data-plus="1"></td></tr>
+            <tr class="rule bat"><td data-t="b1.r6"></td><td data-v="50148"></td><td data-v="93111"></td><td data-v="42963" data-plus="1"></td></tr>
+            <tr><td data-t="b1.r7"></td><td data-v="309"></td><td class="neg" data-v="2521"></td><td>&times;8,2</td></tr>
+            <tr><td data-t="b1.r8"></td><td data-v="350"></td><td data-v="1200"></td><td>&times;3,4</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="panel thesis" style="margin-top:10px">
+        <p class="pbody" data-t="b1.thesis"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================ 9  Caso Brasil: pilha + bateria -->
+<section class="slide" data-n="9" id="s9">
+  <p class="eyebrow" data-t="b2.eye"></p>
+  <h2 data-t="b2.h"></h2>
+  <div class="cols c">
+    <div>
+      <svg class="fig stackfig" viewBox="0 0 580 222" role="img" data-alt="b2.ax">
+        <g id="brAxis"></g><g id="brStack"></g><g id="brMarks"></g>
+      </svg>
+      <div class="legend">
+        <span><i class="sw fix"></i><span data-t="b2.g1"></span></span>
+        <span><i class="sw hyd"></i><span data-t="b2.g2"></span></span>
+        <span><i class="sw thm"></i><span data-t="b2.g3"></span></span>
+        <span><i class="sw ln"></i><span data-t="b2.g4"></span></span>
+        <span><i class="sw pr"></i><span data-t="b2.g5"></span></span>
+      </div>
+      <p class="gloss" style="margin-top:.45em" data-t="b2.gloss"></p>
+    </div>
+    <div>
+      <div class="ctl">
+        <label for="brRho"><span data-t="b2.sl1"></span><b id="brRhoV"></b></label>
+        <input id="brRho" type="range" min="8" max="25" step="0.1" value="14.3">
+        <label for="brE" style="margin-top:.8em"><span data-t="b2.sl2"></span><b id="brEV"></b></label>
+        <input id="brE" type="range" min="0" max="20000" step="500" value="2000">
+      </div>
+      <div class="tw">
+        <table class="rev">
+          <thead>
+            <tr><th class="unit" data-t="b2.hf"></th>
+              <th class="grp" colspan="3" id="grp0"></th>
+              <th class="grp gap" colspan="3" id="grp1"></th></tr>
+            <tr><th></th>
+              <th data-t="b2.cr"></th><th data-t="b2.cc"></th><th data-t="b2.cl"></th>
+              <th class="gap" data-t="b2.cr"></th><th data-t="b2.cc"></th><th data-t="b2.cl"></th></tr>
+          </thead>
+          <tbody>
+            <tr><td data-t="b2.afix"></td><td id="a_fix_r0"></td><td id="a_fix_c0"></td><td id="a_fix_l0"></td><td class="gap" id="a_fix_r1"></td><td id="a_fix_c1"></td><td id="a_fix_l1"></td></tr>
+            <tr><td data-t="b2.aflex"></td><td id="a_flex_r0"></td><td id="a_flex_c0"></td><td id="a_flex_l0"></td><td class="gap" id="a_flex_r1"></td><td id="a_flex_c1"></td><td id="a_flex_l1"></td></tr>
+            <tr><td data-t="b2.aterm"></td><td id="a_term_r0"></td><td id="a_term_c0"></td><td id="a_term_l0"></td><td class="gap" id="a_term_r1"></td><td id="a_term_c1"></td><td id="a_term_l1"></td></tr>
+            <tr class="bat"><td data-t="b2.abat"></td><td></td><td></td><td></td><td class="gap" id="a_bat_r1"></td><td id="a_bat_c1"></td><td id="a_bat_l1"></td></tr>
+            <tr class="rule"><td data-t="b2.adem"></td><td class="neg" id="a_dem_r0"></td><td></td><td></td><td class="gap neg" id="a_dem_r1"></td><td></td><td></td></tr>
+            <tr class="sum"><td data-t="b2.asoma"></td><td id="a_soma_r0"></td><td id="a_soma_c0"></td><td id="a_soma_l0"></td><td class="gap" id="a_soma_r1"></td><td id="a_soma_c1"></td><td id="a_soma_l1"></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="panel thesis" style="margin-top:10px">
+        <p class="pbody" data-t="b2.thesis"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div>
+<script>
+const DICT = {
+pt:{
+ "c.title":"Quando o preço diz a verdade",
+ "c.sub":"Uma bateria, duas horas e o valor da flexibilidade",
+ "c.stand":"Um exemplo mínimo, com dois geradores e uma restrição de rampa, que mostra de onde vem a receita de uma bateria e por que ela é exatamente igual ao que a bateria economiza para o sistema.",
+ "c.by":"ALEXANDRE STREET &nbsp;·&nbsp; AGOSTO DE 2026",
+
+ "s2.eye":"O problema",
+ "s2.h":"A demanda sobe 30 MWh em uma hora. A térmica barata sobe 25.",
+ "s2.b1":"Duas térmicas, capacidade ilimitada.",
+ "s2.b2":"Custo variável de <strong>100</strong> e <strong>300</strong> R$/MWh.",
+ "s2.b3":"Rampa de subida de <strong>25 MWh/h</strong>, igual para as duas.",
+ "s2.b4":"Demanda de <strong>100 MWh</strong> em t1 e <strong>130 MWh</strong> em t2.",
+ "s2.gloss":"t1 é a primeira hora do horizonte, de modo que a rampa restringe apenas o degrau de t1 para t2.",
+ "s2.axis":"Eixo vertical truncado em 90 MWh.",
+ "fig.alt":"A demanda passa de 100 MWh em t1 para 130 MWh em t2, enquanto a térmica barata só alcança 125 MWh por causa da rampa de 25 MWh por hora.",
+ "fig.gap2":"da térmica cara",
+ "fig.rmax":"rampa máxima",
+
+ "s3.eye":"Caso A · sem bateria",
+ "s3.h":"O despacho ótimo custa R$ 24.000, e o preço em t1 fica negativo.",
+ "s3.gloss":"Quantidades em MWh; receita, custo, lucro e custo da hora em R$; preço spot em R$/MWh. A receita da demanda entra negativa, porque é o que os consumidores pagam. O preço spot de cada hora é o custo marginal de operação: a variação do custo total dos dois períodos quando se acrescenta 1 MWh de demanda naquela hora, mantendo a outra parada.",
+ "s3.model":"O modelo de despacho",
+ "s3.mgloss":"λ<sub>t</sub> é o preço da energia na hora t. μ<sub>i</sub> é quanto vale, para o sistema, 1 MWh a mais de rampa.",
+ "st":"sujeito a",
+
+ "t.demand":"Demanda","t.th1":"Térmica 1","t.th2":"Térmica 2","t.bat":"Bateria",
+ "t.hcost":"Custo da hora","t.spot":"Preço spot","t.sum":"Soma",
+ "t.rev":"Receita","t.cost":"Custo","t.profit":"Lucro","t.consumers":"Consumidores",
+
+ "s4.eye":"A leitura das duais",
+ "s4.h":"O preço negativo não é defeito do modelo. É a conta certa.",
+ "s4.b1":"A folga de rampa vale a diferença entre as duas máquinas.",
+ "s4.b2":"Gerar em t1 custa 100 e <em>cria</em> folga que vale 200. Líquido, −100.",
+ "s4.b3":"Gerar em t2 custa 100 e <em>consome</em> folga que vale 200. Total, 300.",
+ "s4.b4":"O spread entre as horas é o dobro da diferença de custos.",
+ "s4.p1h":"Adequação de receita",
+ "s4.p1":"Os consumidores pagam 29.000 e os geradores recebem 29.000. A coluna de receita soma zero.",
+ "s4.p2h":"Recuperação de custo",
+ "s4.p2":"A Térmica 1 vende a −100 em t1 e ainda assim fecha com lucro de 5.000, que é exatamente μ<sub>1</sub> × R = 200 × 25, a renda da própria rampa. A Térmica 2 fecha em zero. Nenhum gerador perde dinheiro.",
+ "s4.gloss":"Eletricidade não tem lixeira. Como não é possível gerar mais do que se consome, o preço negativo em t1 é o sistema dizendo que consumir naquela hora vale 100 R$/MWh.",
+
+ "s5.eye":"Caso B · com uma bateria de 1 <span class=\"nocaps\">MWh</span>",
+ "s5.h":"A bateria compra a −100, vende a +300 e ganha 400.",
+ "s5.gloss":"A bateria carrega 1 MWh em t1, quando o preço é −100, e por isso recebe 100 para consumir. Descarrega o mesmo 1 MWh em t2 e vende a 300. Receita de 400 e custo zero. Os preços não se alteram, porque as máquinas na margem continuam as mesmas.",
+ "s5.model":"O modelo com a bateria",
+ "s5.mgloss":"e é a energia deslocada de t1 para t2, com E = 1 MWh e 100% de eficiência. A dual da capacidade é a diferença de preços, β = 400.",
+
+ "s6.eye":"Os dois casos lado a lado",
+ "s6.h":"O lucro da bateria é a economia que ela gera para o sistema.",
+ "s6.g1":"Sem bateria","s6.g2":"Com bateria",
+ "s6.cap":"Todos os valores em R$. A coluna de receita soma zero nos dois casos: o que os consumidores pagam é exatamente o que os geradores e a bateria recebem.",
+ "s6.k1":"Economia de operação","s6.v1":"24.000 → 23.600","s6.d1":"−400 R$",
+ "s6.k2":"Lucro da bateria","s6.v2":"400 − 0","s6.d2":"+400 R$",
+ "s6.k3":"Pago pelos consumidores","s6.v3":"29.000 = 29.000","s6.d3":"sem variação",
+
+ "s7.eye":"Quanto construir",
+ "s7.h":"A renda da bateria é renda de escassez, e some aos 2,5 MWh.",
+ "s7.c1":"Bateria instalada","s7.c2":"Custo total","s7.c3":"Preço t1","s7.c4":"Preço t2","s7.c5":"Valor marginal",
+ "s7.r4":"2,5 MWh ou mais",
+ "s7.cap":"Custo total em R$; preços e valor marginal em R$/MWh. O valor marginal é quanto vale, para o sistema, o próximo MWh de bateria.",
+ "s7.lead":"Com 2,5 MWh de armazenamento a rampa deixa de amarrar, a térmica cara sai do despacho e as duas horas passam a valer 100 R$/MWh. Daí em diante, o MWh seguinte de bateria vale zero.",
+ "s7.thesis":"O mesmo preço que remunera a primeira bateria informa quando a próxima deixa de ser necessária. É assim que o preço conecta o mercado, e os incentivos que ele cria, às necessidades de quem opera o sistema."
+},
+
+en:{
+ "c.title":"When the price tells the truth",
+ "c.sub":"One battery, two hours, and the value of flexibility",
+ "c.stand":"A minimal example, with two generators and one ramp constraint, showing where a battery's revenue comes from and why it is exactly equal to what the battery saves the system.",
+ "c.by":"ALEXANDRE STREET &nbsp;·&nbsp; AUGUST 2026",
+
+ "s2.eye":"The problem",
+ "s2.h":"Demand rises 30 MWh in one hour. The cheap unit can only rise 25.",
+ "s2.b1":"Two thermal units, unlimited capacity.",
+ "s2.b2":"Variable cost of <strong>100</strong> and <strong>300</strong> R$/MWh.",
+ "s2.b3":"Ramp-up limit of <strong>25 MWh/h</strong>, the same for both.",
+ "s2.b4":"Demand of <strong>100 MWh</strong> at t1 and <strong>130 MWh</strong> at t2.",
+ "s2.gloss":"t1 is the first hour of the horizon, so the ramp constrains only the step from t1 to t2.",
+ "s2.axis":"Vertical axis truncated at 90 MWh.",
+ "fig.alt":"Demand goes from 100 MWh at t1 to 130 MWh at t2, while the cheap unit only reaches 125 MWh because of the 25 MWh per hour ramp limit.",
+ "fig.gap2":"from the expensive unit",
+ "fig.rmax":"ramp limit",
+
+ "s3.eye":"Case A · no battery",
+ "s3.h":"The optimal dispatch costs R$ 24,000, and the price at t1 turns negative.",
+ "s3.gloss":"Quantities in MWh; revenue, cost, profit and hourly cost in R$; spot price in R$/MWh. Demand's revenue enters negative, because it is what consumers pay. Each hour's spot price is the marginal operating cost: the change in total cost over the two periods when 1 MWh of demand is added in that hour and the other one is held fixed.",
+ "s3.model":"The dispatch model",
+ "s3.mgloss":"λ<sub>t</sub> is the price of energy in hour t. μ<sub>i</sub> is what one more MWh of ramp is worth to the system.",
+ "st":"subject to",
+
+ "t.demand":"Demand","t.th1":"Thermal 1","t.th2":"Thermal 2","t.bat":"Battery",
+ "t.hcost":"Hourly cost","t.spot":"Spot price","t.sum":"Total",
+ "t.rev":"Revenue","t.cost":"Cost","t.profit":"Profit","t.consumers":"Consumers",
+
+ "s4.eye":"Reading the duals",
+ "s4.h":"The negative price is not a flaw in the model. It is the right arithmetic.",
+ "s4.b1":"Ramp headroom is worth the difference between the two units.",
+ "s4.b2":"Generating at t1 costs 100 and <em>creates</em> headroom worth 200. Net, −100.",
+ "s4.b3":"Generating at t2 costs 100 and <em>consumes</em> headroom worth 200. Total, 300.",
+ "s4.b4":"The spread between the hours is twice the cost difference.",
+ "s4.p1h":"Revenue adequacy",
+ "s4.p1":"Consumers pay 29,000 and generators receive 29,000. The revenue column sums to zero.",
+ "s4.p2h":"Cost recovery",
+ "s4.p2":"Thermal 1 sells at −100 at t1 and still closes with a profit of 5,000, which is exactly μ<sub>1</sub> × R = 200 × 25, the rent on its own ramp. Thermal 2 closes at zero. No generator loses money.",
+ "s4.gloss":"Electricity has no waste bin. Since it is impossible to generate more than is consumed, the negative price at t1 is the system saying that consuming in that hour is worth 100 R$/MWh.",
+
+ "s5.eye":"Case B · with a 1 <span class=\"nocaps\">MWh</span> battery",
+ "s5.h":"The battery buys at −100, sells at +300, and earns 400.",
+ "s5.gloss":"The battery charges 1 MWh at t1, when the price is −100, and is therefore paid 100 to consume. It discharges that same 1 MWh at t2 and sells at 300. Revenue of 400 and zero cost. Prices do not change, because the units at the margin are still the same.",
+ "s5.model":"The model with the battery",
+ "s5.mgloss":"e is the energy shifted from t1 to t2, with E = 1 MWh and 100% efficiency. The dual of the capacity limit is the price difference, β = 400.",
+
+ "s6.eye":"The two cases side by side",
+ "s6.h":"The battery's profit is the saving it creates for the system.",
+ "s6.g1":"Without battery","s6.g2":"With battery",
+ "s6.cap":"All values in R$. The revenue column sums to zero in both cases: what consumers pay is exactly what the generators and the battery receive.",
+ "s6.k1":"Operating saving","s6.v1":"24,000 → 23,600","s6.d1":"−400 R$",
+ "s6.k2":"Battery profit","s6.v2":"400 − 0","s6.d2":"+400 R$",
+ "s6.k3":"Paid by consumers","s6.v3":"29,000 = 29,000","s6.d3":"unchanged",
+
+ "s7.eye":"How much to build",
+ "s7.h":"The battery's income is a scarcity rent, and it vanishes at 2.5 MWh.",
+ "s7.c1":"Installed battery","s7.c2":"Total cost","s7.c3":"Price t1","s7.c4":"Price t2","s7.c5":"Marginal value",
+ "s7.r4":"2.5 MWh or more",
+ "s7.cap":"Total cost in R$; prices and marginal value in R$/MWh. The marginal value is what the next MWh of battery is worth to the system.",
+ "s7.lead":"With 2.5 MWh of storage the ramp stops binding, the expensive unit leaves the dispatch, and both hours settle at 100 R$/MWh. From there on, the next MWh of battery is worth zero.",
+ "s7.thesis":"The same price that pays the first battery tells us when the next one stops being needed. That is how price connects the market, and the incentives it creates, to the needs of those who operate the system."
+},
+
+es:{
+ "c.title":"Cuando el precio dice la verdad",
+ "c.sub":"Una batería, dos horas y el valor de la flexibilidad",
+ "c.stand":"Un ejemplo mínimo, con dos generadores y una restricción de rampa, que muestra de dónde viene el ingreso de una batería y por qué es exactamente igual a lo que la batería le ahorra al sistema.",
+ "c.by":"ALEXANDRE STREET &nbsp;·&nbsp; AGOSTO DE 2026",
+
+ "s2.eye":"El problema",
+ "s2.h":"La demanda sube 30 MWh en una hora. La térmica barata sólo sube 25.",
+ "s2.b1":"Dos térmicas, capacidad ilimitada.",
+ "s2.b2":"Costo variable de <strong>100</strong> y <strong>300</strong> R$/MWh.",
+ "s2.b3":"Rampa de subida de <strong>25 MWh/h</strong>, igual para ambas.",
+ "s2.b4":"Demanda de <strong>100 MWh</strong> en t1 y <strong>130 MWh</strong> en t2.",
+ "s2.gloss":"t1 es la primera hora del horizonte, de modo que la rampa restringe únicamente el escalón de t1 a t2.",
+ "s2.axis":"Eje vertical truncado en 90 MWh.",
+ "fig.alt":"La demanda pasa de 100 MWh en t1 a 130 MWh en t2, mientras que la térmica barata sólo alcanza 125 MWh por la rampa de 25 MWh por hora.",
+ "fig.gap2":"de la térmica cara",
+ "fig.rmax":"rampa máxima",
+
+ "s3.eye":"Caso A · sin batería",
+ "s3.h":"El despacho óptimo cuesta R$ 24.000, y el precio en t1 se vuelve negativo.",
+ "s3.gloss":"Cantidades en MWh; ingreso, costo, beneficio y costo horario en R$; precio spot en R$/MWh. El ingreso de la demanda entra en negativo, porque es lo que pagan los consumidores. El precio spot de cada hora es el costo marginal de operación: la variación del costo total de los dos períodos cuando se agrega 1 MWh de demanda en esa hora y se mantiene la otra sin cambios.",
+ "s3.model":"El modelo de despacho",
+ "s3.mgloss":"λ<sub>t</sub> es el precio de la energía en la hora t. μ<sub>i</sub> es cuánto vale, para el sistema, 1 MWh más de rampa.",
+ "st":"sujeto a",
+
+ "t.demand":"Demanda","t.th1":"Térmica 1","t.th2":"Térmica 2","t.bat":"Batería",
+ "t.hcost":"Costo horario","t.spot":"Precio spot","t.sum":"Suma",
+ "t.rev":"Ingreso","t.cost":"Costo","t.profit":"Beneficio","t.consumers":"Consumidores",
+
+ "s4.eye":"La lectura de las duales",
+ "s4.h":"El precio negativo no es un defecto del modelo. Es la cuenta correcta.",
+ "s4.b1":"La holgura de rampa vale la diferencia entre las dos máquinas.",
+ "s4.b2":"Generar en t1 cuesta 100 y <em>crea</em> holgura que vale 200. Neto, −100.",
+ "s4.b3":"Generar en t2 cuesta 100 y <em>consume</em> holgura que vale 200. Total, 300.",
+ "s4.b4":"El diferencial entre las horas es el doble de la diferencia de costos.",
+ "s4.p1h":"Suficiencia de ingresos",
+ "s4.p1":"Los consumidores pagan 29.000 y los generadores reciben 29.000. La columna de ingresos suma cero.",
+ "s4.p2h":"Recuperación de costos",
+ "s4.p2":"La Térmica 1 vende a −100 en t1 y aun así cierra con un beneficio de 5.000, que es exactamente μ<sub>1</sub> × R = 200 × 25, la renta de su propia rampa. La Térmica 2 cierra en cero. Ningún generador pierde dinero.",
+ "s4.gloss":"La electricidad no tiene papelera. Como no es posible generar más de lo que se consume, el precio negativo en t1 es el sistema diciendo que consumir en esa hora vale 100 R$/MWh.",
+
+ "s5.eye":"Caso B · con una batería de 1 <span class=\"nocaps\">MWh</span>",
+ "s5.h":"La batería compra a −100, vende a +300 y gana 400.",
+ "s5.gloss":"La batería carga 1 MWh en t1, cuando el precio es −100, y por eso recibe 100 por consumir. Descarga ese mismo 1 MWh en t2 y vende a 300. Ingreso de 400 y costo cero. Los precios no cambian, porque las máquinas en el margen siguen siendo las mismas.",
+ "s5.model":"El modelo con la batería",
+ "s5.mgloss":"e es la energía desplazada de t1 a t2, con E = 1 MWh y 100% de eficiencia. La dual de la capacidad es la diferencia de precios, β = 400.",
+
+ "s6.eye":"Los dos casos lado a lado",
+ "s6.h":"El beneficio de la batería es el ahorro que genera para el sistema.",
+ "s6.g1":"Sin batería","s6.g2":"Con batería",
+ "s6.cap":"Todos los valores en R$. La columna de ingresos suma cero en ambos casos: lo que pagan los consumidores es exactamente lo que reciben los generadores y la batería.",
+ "s6.k1":"Ahorro de operación","s6.v1":"24.000 → 23.600","s6.d1":"−400 R$",
+ "s6.k2":"Beneficio de la batería","s6.v2":"400 − 0","s6.d2":"+400 R$",
+ "s6.k3":"Pagado por los consumidores","s6.v3":"29.000 = 29.000","s6.d3":"sin variación",
+
+ "s7.eye":"Cuánto construir",
+ "s7.h":"El ingreso de la batería es renta de escasez, y desaparece a los 2,5 MWh.",
+ "s7.c1":"Batería instalada","s7.c2":"Costo total","s7.c3":"Precio t1","s7.c4":"Precio t2","s7.c5":"Valor marginal",
+ "s7.r4":"2,5 MWh o más",
+ "s7.cap":"Costo total en R$; precios y valor marginal en R$/MWh. El valor marginal es cuánto vale, para el sistema, el próximo MWh de batería.",
+ "s7.lead":"Con 2,5 MWh de almacenamiento la rampa deja de estar activa, la térmica cara sale del despacho y las dos horas pasan a valer 100 R$/MWh. De ahí en adelante, el siguiente MWh de batería vale cero.",
+ "s7.thesis":"El mismo precio que remunera a la primera batería informa cuándo la siguiente deja de ser necesaria. Así es como el precio conecta el mercado, y los incentivos que crea, con las necesidades de quien opera el sistema."
+},
+
+zh:{
+ "c.title":"当价格说出真相",
+ "c.sub":"一块电池、两个时段，与灵活性的价值",
+ "c.stand":"一个最简算例：两台机组、一条爬坡约束。它说明电池的收入从何而来，以及为什么这笔收入恰好等于电池为系统节省的成本。",
+ "c.by":"ALEXANDRE STREET &nbsp;·&nbsp; 2026 年 8 月",
+
+ "s2.eye":"问题",
+ "s2.h":"需求在一小时内上升 30 MWh，低成本机组却只能爬升 25 MWh。",
+ "s2.b1":"两台火电机组，容量不受限。",
+ "s2.b2":"可变成本分别为 <strong>100</strong> 与 <strong>300</strong> R$/MWh。",
+ "s2.b3":"向上爬坡限值均为 <strong>25 MWh/h</strong>。",
+ "s2.b4":"t1 时段需求 <strong>100 MWh</strong>，t2 时段需求 <strong>130 MWh</strong>。",
+ "s2.gloss":"t1 是优化时域的第一个时段，因此爬坡约束只作用于从 t1 到 t2 的爬升。",
+ "s2.axis":"纵轴自 90 MWh 起截断。",
+ "fig.alt":"需求从 t1 的 100 MWh 上升到 t2 的 130 MWh，而低成本机组受每小时 25 MWh 的爬坡限制，最多只能达到 125 MWh。",
+ "fig.gap2":"由高成本机组供给",
+ "fig.rmax":"爬坡限值",
+
+ "s3.eye":"情形 A · 无电池",
+ "s3.h":"最优调度成本为 24,000 R$，t1 时段的价格为负。",
+ "s3.gloss":"电量单位为 MWh；收入、成本、利润与时段成本单位为 R$；现货价格单位为 R$/MWh。需求一行的收入取负号，因为那是消费者支付的金额。每个时段的现货价格即边际运行成本：在该时段增加 1 MWh 需求、另一时段保持不变时，两时段总成本的变化量。",
+ "s3.model":"调度模型",
+ "s3.mgloss":"λ<sub>t</sub> 是 t 时段的电能价格。μ<sub>i</sub> 是系统中多出 1 MWh 爬坡能力的价值。",
+ "st":"约束条件",
+
+ "t.demand":"需求","t.th1":"机组 1","t.th2":"机组 2","t.bat":"电池",
+ "t.hcost":"时段成本","t.spot":"现货价格","t.sum":"合计",
+ "t.rev":"收入","t.cost":"成本","t.profit":"利润","t.consumers":"消费者",
+
+ "s4.eye":"对偶变量的解读",
+ "s4.h":"负价格不是模型的缺陷，而是正确的计算结果。",
+ "s4.b1":"爬坡裕度的价值，等于两台机组的成本之差。",
+ "s4.b2":"在 t1 多发 1 MWh，成本 100，同时<em>创造出</em>价值 200 的裕度，净额为 −100。",
+ "s4.b3":"在 t2 多发 1 MWh，成本 100，同时<em>消耗掉</em>价值 200 的裕度，合计 300。",
+ "s4.b4":"两个时段之间的价差，是成本差的两倍。",
+ "s4.p1h":"收入充足性",
+ "s4.p1":"消费者支付 29,000，发电方收到 29,000。收入一列合计为零。",
+ "s4.p2h":"成本回收",
+ "s4.p2":"机组 1 在 t1 以 −100 售电，最终仍获得 5,000 的利润，恰好等于 μ<sub>1</sub> × R = 200 × 25，即其自身爬坡约束的租金。机组 2 的利润为零。没有任何发电方亏损。",
+ "s4.gloss":"电力没有垃圾桶。既然发电量不可能超过用电量，t1 时段的负价格就是系统在说：此刻多用 1 MWh，对系统而言值 100 R$。",
+
+ "s5.eye":"情形 B · 加入 1 <span class=\"nocaps\">MWh</span> 电池",
+ "s5.h":"电池以 −100 买入、以 +300 卖出，获利 400。",
+ "s5.gloss":"电池在 t1 充入 1 MWh，此时价格为 −100，因此它因用电而获得 100。同样这 1 MWh 在 t2 放出，以 300 售出。收入 400，成本为零。价格没有变化，因为边际机组仍然相同。",
+ "s5.model":"含电池的模型",
+ "s5.mgloss":"e 是从 t1 转移到 t2 的电量，E = 1 MWh，效率为 100%。容量约束的对偶变量即为价差，β = 400。",
+
+ "s6.eye":"两种情形对比",
+ "s6.h":"电池的利润，正是它为系统创造的成本节省。",
+ "s6.g1":"无电池","s6.g2":"有电池",
+ "s6.cap":"所有数值单位为 R$。两种情形下收入一列均合计为零：消费者支付的金额，恰好等于发电方与电池收到的金额。",
+ "s6.k1":"运行成本节省","s6.v1":"24,000 → 23,600","s6.d1":"−400 R$",
+ "s6.k2":"电池利润","s6.v2":"400 − 0","s6.d2":"+400 R$",
+ "s6.k3":"消费者支付","s6.v3":"29,000 = 29,000","s6.d3":"没有变化",
+
+ "s7.eye":"该建多少",
+ "s7.h":"电池的收益是稀缺租金，到 2.5 MWh 时便归零。",
+ "s7.c1":"已装电池","s7.c2":"总成本","s7.c3":"t1 价格","s7.c4":"t2 价格","s7.c5":"边际价值",
+ "s7.r4":"2.5 MWh 及以上",
+ "s7.cap":"总成本单位为 R$；价格与边际价值单位为 R$/MWh。边际价值是指下一个 MWh 电池对系统的价值。",
+ "s7.lead":"当储能达到 2.5 MWh 时，爬坡约束不再起作用，高成本机组退出调度，两个时段的价格都回到 100 R$/MWh。此后，再增加 1 MWh 电池的价值为零。",
+ "s7.thesis":"为第一块电池付费的那个价格，同时也告诉我们下一块何时不再需要。价格正是以这种方式，把市场及其激励，与系统运行者的真实需要连接起来。"
+}
+};
+const BRT={
+pt:{
+"b2.hf":"R$ mi",
+"b2.g0":"Sem bateria",
+"b2.g1b":"Com bateria",
+"b2.cr":"Receita",
+"b2.cc":"Custo",
+"b2.cl":"Lucro",
+"b2.afix":"Hidro inflexível",
+"b2.aflex":"Hidro flexível",
+"b2.aterm":"Térmica",
+"b2.abat":"Bateria",
+"b2.adem":"Demanda líquida",
+"b2.asoma":"Soma",
+"b1.mcax":"CMO",
+"b1.k1":"demanda líquida: o que o parque controlável atende",
+"b1.k2":"carga bruta",
+"b1.k3":"eólica + solar",
+"b1.k4":"CMO, eixo da direita",
+
+"b1.eye":"Caso Brasil · quarta, 4 de fevereiro de 2026",
+"b1.h":"O parque sobe 43 GW e o CMO se multiplica por 8.",
+"b1.alt":"Curva do dia: a carga bruta quase não se move, a geração eólica e solar despenca ao entardecer, e o parque controlável sobe de 50 GW às 12h para 93 GW às 19h, enquanto o CMO salta de 309 para 2.521 R$/MWh.",
+"b1.mc":"CMO","b1.lv":"vale","b1.lp":"ponta",
+"b1.c1":"t1 · 12h","b1.c2":"t2 · 19h","b1.c3":"Δ",
+"b1.r1":"Carga bruta","b1.r2":"Eólica + solar","b1.r3":"Distribuída",
+"b1.r4":"Hidráulica","b1.r5":"Térmica","b1.r6":"Controlável",
+"b1.r7":"CMO (SE)","b1.r8":"PLD (SE)",
+"b1.gloss":"t1 é o vale da curva do parque controlável (12h) e t2 é a ponta (19h). Curvas do dia, em MWmed: a fina é a carga bruta, a verde é eólica mais solar, a grossa é o parque controlável. As barras são o CMO, no eixo da direita. A carga bruta quase não se mexe entre as duas horas; quem sobe 43 GW é o parque controlável, porque a solar sai. Valores medidos. As séries de carga e de geração do ONS contabilizam a geração distribuída em bases diferentes, então a tabela traz grandezas medidas lado a lado, sem derivar uma da outra.",
+"b1.thesis":"Na mesma semana, dia 6, o sistema moveu 27 GW e o CMO andou 47 R$/MWh. Dia 4 ele moveu 43 GW e o CMO andou 2.212. O valor da flexibilidade não está espalhado pelo ano, está concentrado em poucas horas.",
+
+"b2.eye":"Caso Brasil · a pilha e a bateria",
+"b2.h":"A rampa da hidráulica é o que separa os dois preços.",
+"b2.ax":"Pilha de ordem de mérito do SIN em 4 de fevereiro de 2026","b2.axx":"Potência acumulada (GW)",
+"b2.sl1":"Rampa da hidráulica flexível","b2.sl2":"Bateria instalada",
+"b2.hm":"Modelo, as duas horas",
+"b2.i1":"Preço t1","b2.i2":"Preço t2","b2.i3":"Spread do modelo",
+
+"b2.lt1":"t1 · vale","b2.lt2":"t2 · ponta",
+"b2.g1":"hidráulica inflexível (piso do dia)",
+"b2.g2":"hidráulica flexível","b2.g3":"térmicas, por CVU",
+"b2.g4":"quantidade da hora","b2.g5":"preço do modelo",
+"b2.gloss":"As duas linhas verticais tracejadas são quantidades: quanto o parque controlável precisou entregar no vale e na ponta. As duas linhas horizontais são preços: o custo marginal que o modelo produz em cada uma dessas horas. Elas se afastam quando você aperta a rampa porque a hidráulica flexível deixa de alcançar o nível da ponta, e o sistema é empurrado para a cauda cara da pilha. A rampa é percentual da hidráulica flexível, não da total: o piso do dia não rampeia. Na tabela, a hidro inflexível entra a custo zero: a água que ela usa não tem uso alternativo naquela hora.",
+"b2.thesis":"A bateria derruba o preço da ponta: a demanda paga muito menos, mas o custo de operação cai pouco. Quase tudo é transferência dos geradores inframarginais para o consumidor, e a bateria fica com uma fração pequena. É por isso que o investimento privado fica atrás do valor social.",
+},
+
+en:{
+"b2.hf":"R$ m",
+"b2.g0":"Without battery",
+"b2.g1b":"With battery",
+"b2.cr":"Revenue",
+"b2.cc":"Cost",
+"b2.cl":"Profit",
+"b2.afix":"Inflexible hydro",
+"b2.aflex":"Flexible hydro",
+"b2.aterm":"Thermal",
+"b2.abat":"Battery",
+"b2.adem":"Net load",
+"b2.asoma":"Total",
+"b1.mcax":"MC",
+"b1.k1":"net load: what the controllable fleet serves",
+"b1.k2":"gross load",
+"b1.k3":"wind + solar",
+"b1.k4":"MC, right axis",
+
+"b1.eye":"Brazil case · Wednesday, 4 February 2026",
+"b1.h":"The fleet climbs 43 GW while MC multiplies by 8.",
+"b1.alt":"The day's curves: gross load barely moves, wind and solar collapse at dusk, and the controllable fleet climbs from 50 GW at noon to 93 GW at 19:00, while marginal cost jumps from 309 to 2,521 R$/MWh.",
+"b1.mc":"MC","b1.lv":"trough","b1.lp":"peak",
+"b1.c1":"t1 · 12:00","b1.c2":"t2 · 19:00","b1.c3":"Δ",
+"b1.r1":"Gross load","b1.r2":"Wind + solar","b1.r3":"Distributed",
+"b1.r4":"Hydro","b1.r5":"Thermal","b1.r6":"Controllable",
+"b1.r7":"MC (SE)","b1.r8":"Spot (SE)",
+"b1.gloss":"t1 is the trough of the controllable fleet curve (12:00) and t2 is its peak (19:00). The day's curves, in average MW: the thin line is gross load, the green one is wind plus solar, the heavy one is the controllable fleet. The bars are marginal cost, on the right axis. Gross load barely moves between the two hours; what climbs 43 GW is the controllable fleet, because solar leaves. Measured values. The operator's load and generation series account for distributed solar on different bases, so the table places measured quantities side by side rather than deriving one from the other.",
+"b1.thesis":"Two days later, on the 6th, the same system moved 27 GW and MC moved 47 R$/MWh. On the 4th it moved 43 GW and MC moved 2,212. The value of flexibility is not spread across the year, it is concentrated in a handful of hours.",
+
+"b2.eye":"Brazil case · the stack and the battery",
+"b2.h":"The hydro ramp is what separates the two prices.",
+"b2.ax":"Merit order of the Brazilian system on 4 February 2026","b2.axx":"Cumulative capacity (GW)",
+"b2.sl1":"Flexible hydro ramp limit","b2.sl2":"Installed battery",
+"b2.hm":"Model, the two hours",
+"b2.i1":"Price t1","b2.i2":"Price t2","b2.i3":"Model spread",
+
+"b2.lt1":"t1 · trough","b2.lt2":"t2 · peak",
+"b2.g1":"inflexible hydro (day's floor)",
+"b2.g2":"flexible hydro","b2.g3":"thermal, by variable cost",
+"b2.g4":"quantity needed","b2.g5":"model price",
+"b2.gloss":"The two dashed vertical lines are quantities: what the controllable fleet had to deliver at the trough and at the peak. The two horizontal lines are prices: the marginal cost the model produces in each of those hours. They pull apart as you tighten the ramp because flexible hydro can no longer reach the peak level, and the system is pushed into the expensive tail of the stack. The ramp is a percentage of flexible hydro, not of total hydro: the day's floor does not ramp. In the table, inflexible hydro enters at zero cost: the water it uses has no alternative use in that hour.",
+"b2.thesis":"The battery pulls the peak price down: demand pays far less, but operating cost falls little. Most of it is a transfer from inframarginal generators to consumers, and the battery keeps a small fraction. That is why private investment lags social value.",
+},
+
+es:{
+"b2.hf":"R$ mi",
+"b2.g0":"Sin batería",
+"b2.g1b":"Con batería",
+"b2.cr":"Ingreso",
+"b2.cc":"Costo",
+"b2.cl":"Beneficio",
+"b2.afix":"Hidro inflexible",
+"b2.aflex":"Hidro flexible",
+"b2.aterm":"Térmica",
+"b2.abat":"Batería",
+"b2.adem":"Demanda neta",
+"b2.asoma":"Suma",
+"b1.mcax":"CMO",
+"b1.k1":"demanda neta: lo que atiende el parque controlable",
+"b1.k2":"carga bruta",
+"b1.k3":"eólica + solar",
+"b1.k4":"CMO, eje derecho",
+
+"b1.eye":"Caso Brasil · miércoles, 4 de febrero de 2026",
+"b1.h":"El parque sube 43 GW y el CMO se multiplica por 8.",
+"b1.alt":"Curvas del día: la carga bruta casi no se mueve, la eólica y la solar se desploman al atardecer, y el parque controlable sube de 50 GW al mediodía a 93 GW a las 19h, mientras el costo marginal salta de 309 a 2.521 R$/MWh.",
+"b1.mc":"CMO","b1.lv":"valle","b1.lp":"punta",
+"b1.c1":"t1 · 12h","b1.c2":"t2 · 19h","b1.c3":"Δ",
+"b1.r1":"Carga bruta","b1.r2":"Eólica + solar","b1.r3":"Distribuida",
+"b1.r4":"Hidráulica","b1.r5":"Térmica","b1.r6":"Controlable",
+"b1.r7":"CMO (SE)","b1.r8":"Spot (SE)",
+"b1.gloss":"t1 es el valle de la curva del parque controlable (12h) y t2 es la punta (19h). Curvas del día, en MW medios: la fina es la carga bruta, la verde es eólica más solar, la gruesa es el parque controlable. Las barras son el costo marginal, en el eje derecho. La carga bruta casi no se mueve entre las dos horas; el que sube 43 GW es el parque controlable, porque la solar se va. Valores medidos. Las series de carga y de generación del operador contabilizan la generación distribuida en bases distintas, así que la tabla presenta cantidades medidas lado a lado, sin derivar una de otra.",
+"b1.thesis":"Dos días después, el 6, el mismo sistema movió 27 GW y el CMO se movió 47 R$/MWh. El día 4 movió 43 GW y el CMO se movió 2.212. El valor de la flexibilidad no está repartido por el año, está concentrado en unas pocas horas.",
+
+"b2.eye":"Caso Brasil · la pila y la batería",
+"b2.h":"La rampa de la hidráulica es lo que separa los dos precios.",
+"b2.ax":"Orden de mérito del sistema brasileño el 4 de febrero de 2026","b2.axx":"Potencia acumulada (GW)",
+"b2.sl1":"Rampa de la hidráulica flexible","b2.sl2":"Batería instalada",
+"b2.hm":"Modelo, las dos horas",
+"b2.i1":"Precio t1","b2.i2":"Precio t2","b2.i3":"Diferencial del modelo",
+
+"b2.lt1":"t1 · valle","b2.lt2":"t2 · punta",
+"b2.g1":"hidráulica inflexible (piso del día)",
+"b2.g2":"hidráulica flexible","b2.g3":"térmicas, por costo variable",
+"b2.g4":"cantidad de la hora","b2.g5":"precio del modelo",
+"b2.gloss":"Las dos líneas verticales punteadas son cantidades: lo que el parque controlable tuvo que entregar en el valle y en la punta. Las dos líneas horizontales son precios: el costo marginal que el modelo produce en cada una de esas horas. Se separan cuando aprietas la rampa porque la hidráulica flexible ya no alcanza el nivel de la punta, y el sistema es empujado hacia la cola cara de la pila. La rampa es porcentaje de la hidráulica flexible, no de la total: el piso del día no rampea. En la tabla, la hidro inflexible entra a costo cero: el agua que usa no tiene uso alternativo en esa hora.",
+"b2.thesis":"La batería baja el precio de la punta: la demanda paga mucho menos, pero el costo de operación cae poco. Casi todo es transferencia de los generadores inframarginales al consumidor, y la batería se queda con una fracción pequeña. Por eso la inversión privada va por detrás del valor social.",
+},
+
+zh:{
+"b2.hf":"百万 R$",
+"b2.g0":"无电池",
+"b2.g1b":"有电池",
+"b2.cr":"收入",
+"b2.cc":"成本",
+"b2.cl":"利润",
+"b2.afix":"不可调水电",
+"b2.aflex":"可调水电",
+"b2.aterm":"火电",
+"b2.abat":"电池",
+"b2.adem":"净负荷",
+"b2.asoma":"合计",
+"b1.mcax":"MC",
+"b1.k1":"净负荷：可控机组需要承担的部分",
+"b1.k2":"总负荷",
+"b1.k3":"风电 + 光伏",
+"b1.k4":"MC，右轴",
+
+"b1.eye":"巴西实例 · 2026 年 2 月 4 日，星期三",
+"b1.h":"可控机组爬升 43 GW，MC 上涨到 8 倍。",
+"b1.alt":"当日曲线：总负荷几乎不变，风电与光伏在傍晚急剧下降，可控机组从中午的 50 GW 爬升至 19 时的 93 GW，而边际成本从 309 跳升至 2,521 R$/MWh。",
+"b1.mc":"MC","b1.lv":"谷时","b1.lp":"峰时",
+"b1.c1":"t1 · 12 时","b1.c2":"t2 · 19 时","b1.c3":"Δ",
+"b1.r1":"总负荷","b1.r2":"风电 + 光伏","b1.r3":"分布式光伏",
+"b1.r4":"水电","b1.r5":"火电","b1.r6":"可控机组",
+"b1.r7":"MC（东南）","b1.r8":"现货价（东南）",
+"b1.gloss":"t1 是可控机组曲线的谷时（12 时），t2 是峰时（19 时）。当日曲线，单位为平均功率：细线是总负荷，绿线是风电加光伏，粗线是可控机组。柱状图为边际成本，对应右轴。两个时段之间总负荷几乎没有变化，爬升 43 GW 的是可控机组，因为光伏退出了。以上均为实测值。运营机构的负荷序列与发电量平衡对分布式光伏采用不同口径，因此表中并列列出实测量，而不由其中之一推导另一个。",
+"b1.thesis":"两天后的 6 日，同一个系统移动了 27 GW，而 MC 只动了 47 R$/MWh。4 日它移动了 43 GW，MC 动了 2,212。灵活性的价值并非均匀分布在全年，而是高度集中在少数几个小时里。",
+
+"b2.eye":"巴西实例 · 机组序列与电池",
+"b2.h":"把两个价格拉开的，是水电的爬坡能力。",
+"b2.ax":"巴西电网经济调度序列，2026 年 2 月 4 日","b2.axx":"累计容量（GW）",
+"b2.sl1":"可调水电爬坡限值","b2.sl2":"已装电池",
+"b2.hm":"模型：这两个时段",
+"b2.i1":"t1 价格","b2.i2":"t2 价格","b2.i3":"模型价差",
+
+"b2.lt1":"t1 · 谷时","b2.lt2":"t2 · 峰时",
+"b2.g1":"不可调水电（当日下限）",
+"b2.g2":"可调水电","b2.g3":"火电，按可变成本",
+"b2.g4":"该时段所需电量","b2.g5":"模型价格",
+"b2.gloss":"两条竖虚线代表电量：可控机组在谷时和峰时各自必须交付多少。两条横线代表价格：模型在这两个时段得出的边际成本。收紧爬坡限值时两条横线会拉开，因为可调水电再也够不到峰时的出力水平，系统被推向序列中昂贵的尾部。爬坡限值是可调水电的百分比，而非全部水电：当日的水电下限不参与爬坡。 表中不可调水电按零成本计入：它所用的水在该时段没有其他用途。",
+"b2.thesis":"电池压低了峰时价格：负荷支付大幅减少，运行成本却只降了一点。其中绝大部分是从边际内机组向消费者的转移，电池只拿到很小一部分。这正是私人投资落后于社会价值的原因。",
+}
+};
+for (const L in BRT) Object.assign(DICT[L], BRT[L]);
+const BR={
+ dia:"04/02/2026", t1:12, t2:19, dt:7,
+ d1:50148.4, d2:93111.4,
+ HFIX:41696, HFLEX:39352, W:308.5, rhoObs:14.3,
+ ctrl:[78781, 75871, 73499, 72323, 72055, 73341, 71469, 65074, 61698, 57148, 54414, 52585, 50148, 54552, 61107, 67536, 74616, 82324, 89300, 93111, 92894, 92787, 89992, 86006],
+ carga:[84320, 80887, 78487, 77304, 77112, 78626, 80761, 86146, 92028, 95088, 97598, 98785, 97168, 99520, 101244, 101005, 101046, 96871, 96150, 99352, 99789, 99315, 96334, 91506],
+ erv:[5973, 5512, 5546, 5517, 5652, 6057, 10132, 20724, 28516, 34435, 39042, 41324, 41280, 39257, 35122, 29581, 22741, 12627, 6008, 5464, 6178, 5890, 5933, 5609],
+ gd:[212, 212, 212, 212, 212, 303, 2400, 7687, 14318, 20816, 25083, 27820, 28428, 27016, 23497, 17955, 12790, 6337, 1892, 278, 212, 212, 212, 212],
+ hid:[70288, 67435, 65106, 63908, 63671, 64994, 63094, 56669, 53359, 48707, 46039, 44197, 41696, 45941, 52472, 58781, 65574, 72945, 78430, 81048, 80550, 80419, 77930, 74808],
+ ter:[8493, 8436, 8394, 8415, 8383, 8347, 8375, 8405, 8339, 8441, 8376, 8388, 8453, 8612, 8635, 8755, 9043, 9379, 10870, 12064, 12343, 12367, 12062, 11198],
+ cmo:[368.0, 340.2, 329.5, 327.6, 327.4, 329.8, 326.1, 319.4, 319.4, 314.0, 313.0, 312.9, 308.5, 282.9, 320.1, 329.1, 344.2, 358.5, 579.2, 2520.6, 4833.3, 3105.9, 873.6, 389.9],
+ pld:[445.78, 384.08, 372.66, 370.5, 370.22, 372.95, 368.08, 360.69, 360.99, 356.5, 354.9, 354.84, 350.19, 319.66, 363.84, 372.98, 392.23, 435.37, 582.86, 1199.88, 1557.92, 1521.4, 879.49, 519.46],
+ arbMC:94253, arbPLD:74012, arbDias:180, arbTop10:23.6,
+ capLo:141992, capMid:177490, capHi:212988,
+ stack:[[0.0, 168.0], [0.0, 136.2], [0.0, 639.9], [0.0, 44.4], [0.0, 175.6], [0.0, 349.0], [0.0, 53.6], [31.17, 465.1], [105.94, 345.0], [116.1, 518.8], [128.17, 568.5], [149.0, 166.0], [149.0, 85.4], [149.0, 75.5], [149.0, 73.4], [149.0, 73.4], [149.0, 93.0], [149.0, 590.8], [228.55, 29.0], [271.14, 13.5], [289.25, 124.4], [293.89, 337.6], [293.89, 337.6], [300.35, 1593.2], [306.64, 720.3], [308.35, 265.4], [309.35, 360.1], [310.41, 250.0], [314.89, 456.7], [317.47, 365.0], [319.46, 250.0], [342.53, 249.9], [347.2, 330.0], [406.71, 220.0], [416.4, 95.0], [445.95, 1672.6], [450.86, 110.0], [518.92, 95.0], [519.71, 350.0], [617.01, 1338.3], [703.1, 236.2], [703.1, 109.4], [741.18, 200.8], [759.24, 56.3], [766.64, 385.8], [806.73, 550.0], [825.02, 529.2], [834.61, 111.8], [836.73, 73.5], [841.11, 177.1], [841.37, 226.0], [842.32, 989.2], [875.88, 381.3], [900.08, 165.9], [900.08, 165.9], [953.55, 826.8], [969.68, 484.1], [984.89, 185.9], [1011.95, 922.6], [1068.51, 360.0], [1078.63, 87.0], [1104.92, 136.4], [1104.92, 136.4], [1294.25, 285.0], [1375.2, 248.6], [1504.27, 49.7], [1838.2, 24.1], [1838.2, 24.1], [1840.95, 170.9], [1840.95, 170.9], [2085.48, 169.1], [2237.72, 220.0], [2319.64, 144.4]]
+};
+// ---- solver de duas horas, espelho do modelo validado em Python ----
+const BRcum = (function(){
+  let mw=[0], cost=[0], cvu=[];
+  for (const [c,m] of BR.stack){ cvu.push(c); mw.push(mw[mw.length-1]+m); cost.push(cost[cost.length-1]+m*c); }
+  return {mw, cost, cvu, total: mw[mw.length-1]};
+})();
+const R1 = BR.d1 - BR.HFIX, R2 = BR.d2 - BR.HFIX;
+function thCost(q){
+  if (q <= 0) return 0;
+  if (q > BRcum.total + 1e-6) return Infinity;
+  let lo=0, hi=BRcum.cvu.length-1;
+  while (lo < hi){ const mid=(lo+hi)>>1; if (BRcum.mw[mid+1] < q) lo=mid+1; else hi=mid; }
+  return BRcum.cost[lo] + (q - BRcum.mw[lo]) * BRcum.cvu[lo];
+}
+function runFixed(rho, e, r1, r2){
+  const R = rho/100 * BR.HFLEX * BR.dt;
+  const top = Math.min(r1 + e, BR.HFLEX);
+  const cand = [0, top];
+  for (let i=1; i<BRcum.mw.length; i++){ cand.push(r1 + e - BRcum.mw[i]); cand.push(r2 - e - BRcum.mw[i] - R); }
+  for (let i=0; i<=40; i++) cand.push(top*i/40);
+  let best = Infinity;
+  for (const h1 of cand){
+    if (h1 < 0 || h1 > top) continue;
+    const h2 = Math.min(h1 + R, r2 - e, BR.HFLEX);
+    if (h2 < 0) continue;
+    const t1 = r1 + e - h1, t2 = r2 - e - h2;
+    if (t1 < -1e-6 || t2 < -1e-6) continue;
+    const c1 = thCost(Math.max(t1,0)), c2 = thCost(Math.max(t2,0));
+    if (!isFinite(c1) || !isFinite(c2)) continue;
+    const v = c1 + BR.W*h1 + c2 + BR.W*h2;      // dois blocos de uma hora
+    if (v < best) best = v;
+  }
+  return best;
+}
+function solve(rho, E, r1, r2){
+  r1 = r1===undefined ? R1 : r1;  r2 = r2===undefined ? R2 : r2;
+  let best = Infinity, eBest = 0;
+  for (let i=0; i<=60; i++){
+    const e = E*i/60, v = runFixed(rho, e, r1, r2);
+    if (v < best){ best = v; eBest = e; }
+  }
+  return {cost: best, e: eBest};
+}
+function prices(rho, E){
+  const d = 10, base = solve(rho, E);
+  if (!isFinite(base.cost)) return {cost:Infinity, e:0, p1:NaN, p2:NaN, spread:NaN};
+  const p1 = (solve(rho, E, R1 + d, R2).cost - base.cost)/d;
+  const p2 = (solve(rho, E, R1, R2 + d).cost - base.cost)/d;
+  return {cost: base.cost, e: base.e, p1, p2, spread: p2 - p1};
+}
+
+// despacho otimo detalhado, para montar a liquidacao por agente
+function dispatchAt(rho, e){
+  const R = rho/100 * BR.HFLEX * BR.dt;
+  const top = Math.min(R1 + e, BR.HFLEX);
+  const cand = [0, top];
+  for (let i=1; i<BRcum.mw.length; i++){ cand.push(R1 + e - BRcum.mw[i]); cand.push(R2 - e - BRcum.mw[i] - R); }
+  for (let i=0; i<=40; i++) cand.push(top*i/40);
+  let best = Infinity, arg = null;
+  for (const h1 of cand){
+    if (h1 < 0 || h1 > top) continue;
+    const h2 = Math.min(h1 + R, R2 - e, BR.HFLEX);
+    if (h2 < 0) continue;
+    const t1 = R1 + e - h1, t2 = R2 - e - h2;
+    if (t1 < -1e-6 || t2 < -1e-6) continue;
+    const c1 = thCost(Math.max(t1,0)), c2 = thCost(Math.max(t2,0));
+    if (!isFinite(c1) || !isFinite(c2)) continue;
+    const v = c1 + BR.W*h1 + c2 + BR.W*h2;
+    if (v < best){ best = v; arg = {h1, h2, t1:Math.max(t1,0), t2:Math.max(t2,0), c1, c2, e}; }
+  }
+  return arg;
+}
+
+// liquidacao por agente, no formato do exemplo didatico
+function settle(rho, E){
+  const pr = prices(rho, E);
+  const d  = dispatchAt(rho, pr.e);
+  if (!d || !isFinite(pr.p1)) return null;
+  const p1 = pr.p1, p2 = pr.p2, e = pr.e;
+  const row = (q1, q2, cost) => ({q1, q2, rec: p1*q1 + p2*q2, cost, luc: p1*q1 + p2*q2 - cost});
+  const ag = {
+    fix: row(BR.HFIX, BR.HFIX, 0),                    // fio d'agua: agua sem uso alternativo
+    flex: row(d.h1, d.h2, BR.W*(d.h1 + d.h2)),
+    term: row(d.t1, d.t2, d.c1 + d.c2),
+    bat:  row(-e, e, 0),
+  };
+  const pago = p1*BR.d1 + p2*BR.d2;
+  ag.dem = {q1: BR.d1, q2: BR.d2, rec: -pago, cost: null, luc: null};
+  ag.soma = {
+    rec:  ag.fix.rec + ag.flex.rec + ag.term.rec + ag.bat.rec - pago,   // adequacao de receita
+    cost: ag.fix.cost + ag.flex.cost + ag.term.cost,
+    luc:  ag.fix.luc + ag.flex.luc + ag.term.luc + ag.bat.luc,
+  };
+  return {p1, p2, e, ag};
+}
+// ================= Slide 8: a curva do dia =================
+const DP = {l:46, r:520, t:14, b:212};
+function drawDay(){
+  const MWMAX = 110000, CMAX = 5000;
+  const XH = h => DP.l + (h + 0.5)/24 * (DP.r - DP.l);
+  const Y  = v => DP.b - v/MWMAX * (DP.b - DP.t);
+  const YC = v => DP.b - Math.min(v,CMAX)/CMAX * (DP.b - DP.t);
+  const bw = (DP.r - DP.l)/24 * 0.62;
+  const ax=[], cv=[], mk=[];
+  // eixo esquerdo, GW
+  ax.push(`<line x1="${DP.l}" y1="${DP.t}" x2="${DP.l}" y2="${DP.b}" stroke="var(--line)"/>`);
+  ax.push(`<line x1="${DP.l}" y1="${DP.b}" x2="${DP.r}" y2="${DP.b}" stroke="var(--line)"/>`);
+  for (const v of [0,25000,50000,75000,100000]){
+    ax.push(`<line x1="${DP.l-4}" y1="${Y(v)}" x2="${DP.l}" y2="${Y(v)}" stroke="var(--line)"/>`);
+    ax.push(`<text x="${DP.l-7}" y="${Y(v)+3.5}" text-anchor="end">${v/1000}</text>`);
+  }
+  ax.push(`<text x="${DP.l-7}" y="${DP.t-4}" text-anchor="end" class="b">GW</text>`);
+  // eixo direito, custo marginal
+  ax.push(`<line x1="${DP.r}" y1="${DP.t}" x2="${DP.r}" y2="${DP.b}" stroke="var(--line)"/>`);
+  for (const v of [0,1250,2500,3750,5000]){
+    ax.push(`<line x1="${DP.r}" y1="${YC(v)}" x2="${DP.r+4}" y2="${YC(v)}" stroke="var(--line)"/>`);
+    ax.push(`<text class="r" x="${DP.r+7}" y="${YC(v)+3.5}">${v ? (v/1000).toFixed(v%1000?2:0).replace('.',',')+'k' : 0}</text>`);
+  }
+  ax.push(`<text class="r b" x="${DP.r+7}" y="${DP.t-4}" data-t="b1.mcax"></text>`);
+  for (let h=0; h<=23; h+=3){
+    ax.push(`<line x1="${XH(h)}" y1="${DP.b}" x2="${XH(h)}" y2="${DP.b+4}" stroke="var(--line)"/>`);
+    ax.push(`<text x="${XH(h)}" y="${DP.b+15}" text-anchor="middle">${h}h</text>`);
+  }
+  // barras de custo marginal, atras das curvas
+  for (let h=0; h<24; h++){
+    const y = YC(BR.cmo[h]);
+    cv.push(`<rect class="mcbar" x="${XH(h)-bw/2}" y="${y}" width="${bw}" height="${DP.b-y}"/>`);
+  }
+  const path = (arr, f) => arr.map((v,i)=> (i?'L':'M') + XH(i) + ' ' + f(v)).join(' ');
+  cv.push(`<path class="ln2" d="${path(BR.carga, Y)}"/>`);
+  cv.push(`<path class="ln3" d="${path(BR.erv, Y)}"/>`);
+  cv.push(`<path class="ln1" d="${path(BR.ctrl, Y)}"/>`);
+  for (const [h,key] of [[BR.t1,'b1.lv'], [BR.t2,'b1.lp']]){
+    mk.push(`<line class="vt" x1="${XH(h)}" y1="${DP.t}" x2="${XH(h)}" y2="${DP.b}"/>`);
+    mk.push(`<circle class="dot" cx="${XH(h)}" cy="${Y(BR.ctrl[h])}" r="4"/>`);
+    const an = h < 12 ? 'start' : 'end', dx = h < 12 ? 7 : -7;
+    mk.push(`<text class="b" x="${XH(h)+dx}" y="${DP.t+11}" text-anchor="${an}" data-t="${key}"></text>`);
+    mk.push(`<text class="p" x="${XH(h)+dx}" y="${DP.t+24}" text-anchor="${an}">${Math.round(BR.ctrl[h]/1000)} GW</text>`);
+  }
+  document.getElementById('d1Ax').innerHTML = ax.join('');
+  document.getElementById('d1Curves').innerHTML = cv.join('');
+  document.getElementById('d1Marks').innerHTML = mk.join('');
+}
+
+// ================= Slide 9: pilha de ordem de merito =================
+const PX = {l:52, r:568, t:12, b:172};
+const YMAX = 1400;
+const BRORD = (function(){
+  const u = BR.stack.map(([c,m]) => ({c, m, kind:'thm'}));
+  u.push({c: BR.W, m: BR.HFLEX, kind:'hyd'});
+  u.sort((a,b) => a.c - b.c);
+  u.unshift({c: 0, m: BR.HFIX, kind:'fix'});      // inflexivel: roda sempre, entra na base
+  return u;
+})();
+const BRTOT = BRORD.reduce((s,u) => s + u.m, 0);
+const X = mw => PX.l + (mw / BRTOT) * (PX.r - PX.l);
+const Y = p  => PX.b - Math.min(Math.max(p,0), YMAX) / YMAX * (PX.b - PX.t);
+
+function drawStack(){
+  const ax=[], st=[];
+  ax.push(`<line x1="${PX.l}" y1="${PX.t}" x2="${PX.l}" y2="${PX.b}" stroke="var(--line)"/>`);
+  ax.push(`<line x1="${PX.l}" y1="${PX.b}" x2="${PX.r}" y2="${PX.b}" stroke="var(--line)"/>`);
+  for (const p of [0,350,700,1050,1400]){
+    ax.push(`<line x1="${PX.l-4}" y1="${Y(p)}" x2="${PX.l}" y2="${Y(p)}" stroke="var(--line)"/>`);
+    ax.push(`<text x="${PX.l-7}" y="${Y(p)+3.5}" text-anchor="end">${p}</text>`);
+  }
+  ax.push(`<text x="${PX.r}" y="${PX.t-1}" text-anchor="end">R$/MWh</text>`);
+  for (let g=0; g<=100; g+=25){
+    ax.push(`<line x1="${X(g*1000)}" y1="${PX.b}" x2="${X(g*1000)}" y2="${PX.b+4}" stroke="var(--line)"/>`);
+    ax.push(`<text x="${X(g*1000)}" y="${PX.b+15}" text-anchor="middle">${g}</text>`);
+  }
+  ax.push(`<text x="${PX.r}" y="${PX.b+28}" text-anchor="end" data-t="b2.axx"></text>`);
+  let acc = 0, path = `M ${X(0)} ${Y(0)}`;
+  for (const u of BRORD){
+    const x0 = X(acc), x1 = X(acc + u.m);
+    const y = (u.kind === 'fix') ? PX.b - 8 : Y(u.c);       // faixa minima visivel para o piso
+    st.push(`<rect class="band ${u.kind}" x="${x0}" y="${y}" width="${Math.max(x1-x0,0.4)}" height="${PX.b-y}"/>`);
+    path += ` L ${x0} ${y} L ${x1} ${y}`;
+    acc += u.m;
+  }
+  st.push(`<path class="edge" d="${path}"/>`);
+  document.getElementById('brAxis').innerHTML = ax.join('');
+  document.getElementById('brStack').innerHTML = st.join('');
+}
+
+function updateBR(){
+  const rho = parseFloat(document.getElementById('brRho').value);
+  const E   = parseFloat(document.getElementById('brE').value);
+  const lang = document.documentElement.getAttribute('data-lang') || 'en';
+  const nf  = new Intl.NumberFormat(LOC[lang], {maximumFractionDigits:0, useGrouping:'always'});
+  const nf1 = new Intl.NumberFormat(LOC[lang], {minimumFractionDigits:1, maximumFractionDigits:1});
+  const nf2 = new Intl.NumberFormat(LOC[lang], {minimumFractionDigits:2, maximumFractionDigits:2});
+  const sg  = function(v){                       // arredonda antes do sinal, para nao imprimir "−0"
+    if (!isFinite(v)) return '—';
+    const n = Math.round(v);
+    return (n < 0 ? '−' : '') + nf.format(Math.abs(n));
+  };
+
+  document.getElementById('brRhoV').textContent = nf1.format(rho) + '%/h';
+  document.getElementById('brEV').textContent   = nf.format(E) + ' MWh';
+
+  const r = prices(rho, E);
+  // liquidacao por agente, sem e com bateria, no formato do exemplo didatico
+  const MI = function(v){                        // R$ milhoes, com sinal de menos tipografico
+    if (v === null || !isFinite(v)) return '';
+    const x = v/1e6;
+    if (Math.abs(x) < 0.005) return nf1.format(0);   // abaixo de R$ 5 mil, e zero
+    const s = (Math.abs(x) < 0.05) ? nf2.format(Math.abs(x)) : nf1.format(Math.abs(x));
+    return (x < 0 ? MINUS : '') + s;
+  };
+  const s0 = settle(rho, 0), s1 = settle(rho, E);
+  const put = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = MI(v); };
+  for (const [k, name] of [['fix','fix'],['flex','flex'],['term','term']]){
+    put('a_'+name+'_r0', s0 && s0.ag[k].rec);  put('a_'+name+'_c0', s0 && s0.ag[k].cost);  put('a_'+name+'_l0', s0 && s0.ag[k].luc);
+    put('a_'+name+'_r1', s1 && s1.ag[k].rec);  put('a_'+name+'_c1', s1 && s1.ag[k].cost);  put('a_'+name+'_l1', s1 && s1.ag[k].luc);
+  }
+  put('a_bat_r1', s1 && s1.ag.bat.rec);  put('a_bat_c1', s1 && s1.ag.bat.cost);  put('a_bat_l1', s1 && s1.ag.bat.luc);
+  put('a_dem_r0', s0 && s0.ag.dem.rec);  put('a_dem_r1', s1 && s1.ag.dem.rec);
+  for (const [sfx, s] of [['0', s0], ['1', s1]]){
+    put('a_soma_r'+sfx, s && s.ag.soma.rec);
+    put('a_soma_c'+sfx, s && s.ag.soma.cost);
+    put('a_soma_l'+sfx, s && s.ag.soma.luc);
+  }
+  // os precos de cada caso vao no cabecalho do proprio grupo
+  const D = DICT[lang];
+  if (s0) document.getElementById('grp0').textContent = D['b2.g0'] + ' · ' + sg(s0.p1) + ' → ' + sg(s0.p2);
+  if (s1) document.getElementById('grp1').textContent = D['b2.g1b'] + ' · ' + sg(s1.p1) + ' → ' + sg(s1.p2);
+
+  const m = [];
+  for (const [d, key] of [[BR.d1,'b2.lt1'], [BR.d2,'b2.lt2']]){
+    const x = X(d);
+    m.push(`<line class="dem" x1="${x}" y1="${PX.t}" x2="${x}" y2="${PX.b}"/>`);
+    const an = (d === BR.d1) ? 'start' : 'end', dx = (d === BR.d1) ? 5 : -5;
+    m.push(`<text class="b" x="${x+dx}" y="${PX.t+11}" text-anchor="${an}" data-t="${key}"></text>`);
+    m.push(`<text class="p" x="${x+dx}" y="${PX.t+24}" text-anchor="${an}">${Math.round(d/1000)} GW</text>`);
+  }
+  const pts = [[r.p1,'t1'], [r.p2,'t2']].filter(p => isFinite(p[0]));
+  const ys  = pts.map(p => Y(p[0]));
+  const near = ys.length === 2 && Math.abs(ys[0]-ys[1]) < 14;
+  pts.forEach(function(pair, i){
+    const y = ys[i], dy = near ? (i === 0 ? 12 : -5) : -5;
+    m.push(`<line class="plv" x1="${PX.l}" y1="${y}" x2="${PX.r}" y2="${y}"/>`);
+    m.push(`<rect class="chip" x="${PX.l+3}" y="${y+dy-9}" width="86" height="13" rx="1"/>`);
+    m.push(`<text class="chipt" x="${PX.l+7}" y="${y+dy}">${pair[1]} → ${sg(pair[0])}</text>`);
+  });
+  document.getElementById('brMarks').innerHTML = m.join('');
+  applyI18n();
+}
+
+function initBR(){
+  if (!document.getElementById('brRho')) return;
+  drawDay(); drawStack();
+  document.getElementById('brRho').addEventListener('input', updateBR);
+  document.getElementById('brE').addEventListener('input', updateBR);
+  updateBR();
+}
+
+const LOC   = {pt:"pt-BR", en:"en-US", es:"es-ES", zh:"zh-CN"};
+const TAG   = {pt:"pt-BR", en:"en",    es:"es",    zh:"zh-CN"};
+const MINUS = "−";
+let CURLANG = "en";
+
+function makeFmt(lang){
+  // useGrouping:"always" mantem o separador nos numeros de quatro digitos, que o
+  // espanhol descartaria (5000 em vez de 5.000) numa coluna que tambem tem 24.000.
+  const nf = new Intl.NumberFormat(LOC[lang], {maximumFractionDigits:2, useGrouping:"always"});
+  return function(v, plus){
+    const s = nf.format(Math.abs(v)).replace(/-/g, MINUS);
+    return v < 0 ? MINUS + s : (plus ? "+" + s : s);
+  };
+}
+
+function applyI18n(){
+  const d = DICT[CURLANG], fmt = makeFmt(CURLANG);
+  document.querySelectorAll("[data-t]").forEach(function(el){
+    const v = d[el.getAttribute("data-t")];
+    if (v === undefined) return;
+    if (/[<&]/.test(v)) { el.innerHTML = v; } else { el.textContent = v; }
+  });
+  document.querySelectorAll("[data-alt]").forEach(function(el){
+    const v = d[el.getAttribute("data-alt")];
+    if (v !== undefined) el.setAttribute("aria-label", v);
+  });
+  document.querySelectorAll("[data-v]").forEach(function(el){
+    el.textContent = fmt(Number(el.getAttribute("data-v")), el.hasAttribute("data-plus"));
+  });
+}
+
+function setLang(lang){
+  if (!DICT[lang]) lang = "en";
+  CURLANG = lang;
+  document.documentElement.setAttribute("data-lang", lang);
+  document.documentElement.lang = TAG[lang];
+  applyI18n();
+  document.querySelectorAll("[data-lang]").forEach(function(b){
+    b.setAttribute("aria-pressed", String(b.dataset.lang === lang));
+  });
+  if (typeof updateBR === "function" && document.getElementById("brRho")) updateBR();
+  try { localStorage.setItem("deck-lang", lang); } catch (e) {}
+}
+
+function setTheme(mode){
+  const root = document.documentElement;
+  if (mode === "auto") { root.removeAttribute("data-theme"); }
+  else { root.setAttribute("data-theme", mode); }
+  document.querySelectorAll("[data-theme-set]").forEach(function(b){
+    b.setAttribute("aria-pressed", String(b.dataset.themeSet === mode));
+  });
+  try { localStorage.setItem("deck-theme", mode); } catch (e) {}
+}
+
+document.querySelectorAll("[data-lang]").forEach(function(b){
+  b.addEventListener("click", function(){ setLang(b.dataset.lang); });
+});
+document.querySelectorAll("[data-theme-set]").forEach(function(b){
+  b.addEventListener("click", function(){ setTheme(b.dataset.themeSet); });
+});
+
+var startLang = "en";
+try { var sl = localStorage.getItem("deck-lang"); if (sl && DICT[sl]) startLang = sl; } catch (e) {}
+var startTheme = "light";
+try { var st = localStorage.getItem("deck-theme"); if (st === "dark" || st === "auto" || st === "light") startTheme = st; } catch (e) {}
+
+setLang(startLang);
+setTheme(startTheme);
+initBR();
+</script>

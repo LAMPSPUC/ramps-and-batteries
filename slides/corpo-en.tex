@@ -1,0 +1,341 @@
+% =========================================================== 1. cover
+{\setbeamertemplate{footline}{}
+\begin{frame}[plain]
+  \vspace{1.7em}
+  {\color{brick}\rule{3.6em}{2.4pt}}
+
+  \vspace{1.1em}
+  {\fontsize{29}{33}\selectfont\bfseries When the price tells the truth\par}
+
+  \vspace{0.55em}
+  {\fontsize{14.5}{18}\selectfont\color{muted} One battery, two hours, and the value of flexibility\par}
+
+  \vspace{1.5em}
+  \begin{minipage}{0.70\textwidth}
+    \fontsize{9.6}{13}\selectfont
+    A minimal example, with two generators and one ramp constraint, showing where
+    a battery's revenue comes from and why it is exactly equal to what the battery
+    saves the system. Then the same reading on a real day of the Brazilian system.
+  \end{minipage}
+
+  \vfill
+  {\fontsize{8.4}{10}\selectfont\color{muted} Alexandre Street\ \ \textbullet\ \ August 2026}
+  \vspace{0.8em}
+\end{frame}}
+
+% =========================================================== 2. the problem
+\begin{frame}
+  \framesubtitle{The problem}
+  \frametitle{Demand rises 30 MWh in one hour. The cheap unit rises 25.}
+
+  \begin{columns}[T,onlytextwidth]
+  \begin{column}{0.42\textwidth}
+    \vspace{0.9em}
+    \fontsize{9.4}{12.6}\selectfont
+    \begin{itemize}\setlength{\itemsep}{0.5em}
+      \item Two thermal units, unlimited capacity.
+      \item Variable cost of \textbf{100} and \textbf{300} R\$/MWh.
+      \item Ramp-up limit of \textbf{25 MWh/h}, the same for both.
+      \item Demand of \textbf{100 MWh} at t1 and \textbf{130 MWh} at t2.
+    \end{itemize}
+
+    \vspace{0.9em}
+    \gloss{t1 is the first hour of the horizon, so the ramp constrains only the
+    step from t1 to t2.}
+  \end{column}
+
+  \begin{column}{0.55\textwidth}
+    \vspace{0.7em}
+    \centering
+    \begin{tikzpicture}[y=0.088cm,x=0.86cm]
+      \draw[rulec,line width=0.7pt] (-0.30,90) -- (-0.30,136);
+      \foreach \v in {100,125,130}{
+        \draw[rulec,line width=0.7pt] (-0.42,\v) -- (-0.30,\v);
+        \node[left,muted,font=\fontsize{6.4}{7}\selectfont] at (-0.46,\v) {\v};
+      }
+      \draw[ink,line width=2.0pt] (0.10,100) -- (1.55,100);
+      \node[above,font=\fontsize{7.6}{8}\selectfont\bfseries,ink] at (0.82,101.5) {100 MWh};
+      \draw[ink,line width=2.0pt] (2.75,130) -- (4.20,130);
+      \node[above,font=\fontsize{7.6}{8}\selectfont\bfseries,ink] at (3.47,131.5) {130 MWh};
+      \draw[brick,line width=1.0pt,dashed] (2.75,125) -- (4.20,125);
+      \node[below,font=\fontsize{6.4}{7}\selectfont,brick] at (3.47,123.6) {125 = 100 + 25};
+      \draw[brick,line width=0.9pt] (4.42,125) -- (4.42,130);
+      \draw[brick,line width=0.9pt] (4.34,125) -- (4.50,125);
+      \draw[brick,line width=0.9pt] (4.34,130) -- (4.50,130);
+      \node[right,font=\fontsize{7.4}{8.4}\selectfont\bfseries,brick,align=left]
+        at (4.50,127.5) {5 MWh\\[-1pt]{\fontsize{6.2}{7.4}\selectfont\mdseries expensive unit}};
+      \draw[->,>=stealth,muted,line width=0.9pt] (1.62,100.8) -- (2.68,124.2);
+      \node[muted,font=\fontsize{6.4}{7.6}\selectfont,anchor=south east,align=right]
+        at (2.30,110) {ramp limit\\[-1pt]25 MWh/h};
+      \node[muted,font=\fontsize{7.4}{8}\selectfont] at (0.82,93.5) {t1};
+      \node[muted,font=\fontsize{7.4}{8}\selectfont] at (3.47,93.5) {t2};
+      \draw[rulec,line width=0.7pt] (-0.30,90) -- (5.35,90);
+    \end{tikzpicture}
+
+    \vspace{0.5em}
+    \gloss{\centering Vertical axis truncated at 90 MWh.}
+  \end{column}
+  \end{columns}
+\end{frame}
+
+% =========================================================== 3. case A
+\begin{frame}
+  \framesubtitle{Case A \ \textbullet\ \ no battery}
+  \frametitle{The optimal dispatch costs R\$ 24,000, and the price at t1 turns negative.}
+
+  \begin{columns}[T,onlytextwidth]
+  \begin{column}{0.635\textwidth}
+    \vspace{0.9em}
+    {\tabfont
+    \setlength{\tabcolsep}{4.0pt}
+    \renewcommand{\arraystretch}{1.19}
+    \begin{tabular}{l r r @{\hspace{1.1em}} r r r}
+      \toprule
+       & \textbf{t1} & \textbf{t2} & \textbf{Revenue} & \textbf{Cost} & \textbf{Profit} \\
+      \midrule
+      Demand         & 100 & 130 & $-$29,000 & & \\
+      Thermal 1      & 100 & 125 & 27,500 & 22,500 & 5,000 \\
+      Thermal 2      & 0   & 5   & 1,500  & 1,500  & 0 \\
+      \addlinespace[0.1em]\midrule
+      Hourly cost    & 10,000 & 14,000 & & & \\
+      Spot price     & \hl{$-$100} & \textbf{300} & & & \\
+      \addlinespace[0.1em]\midrule
+      \textbf{Total} & & & \textbf{0} & \textbf{24,000} & \textbf{5,000} \\
+      \bottomrule
+    \end{tabular}}
+
+    \vspace{0.8em}
+    \gloss{Quantities in MWh; revenue, cost, profit and hourly cost in R\$; spot
+    price in R\$/MWh. Demand's revenue enters negative, because it is what
+    consumers pay. Each hour's spot price is the marginal operating cost: the
+    change in total cost over the two periods when 1 MWh of demand is added in
+    that hour and the other one is held fixed.}
+  \end{column}
+
+  \begin{column}{0.335\textwidth}
+    \vspace{0.9em}
+    \panel{%
+      \fontsize{8.2}{10.6}\selectfont
+      \textbf{The dispatch model}\par
+      \vspace{0.55em}
+      $\displaystyle\min_{g\,\ge\,0}\ \sum_{t}\sum_{i} c_i\,g_{i,t}$\par
+      \vspace{0.55em}
+      subject to\par
+      \vspace{0.30em}
+      $\textstyle\sum_i g_{i,t} = d_t \quad (\lambda_t)$\par
+      \vspace{0.42em}
+      $g_{i,2}-g_{i,1} \le R \quad (\mu_i)$\par
+      \vspace{0.62em}
+      \gloss{$\lambda_t$ is the price of energy in hour $t$. $\mu_i$ is what one
+      more MWh of ramp is worth to the system.}
+    }
+  \end{column}
+  \end{columns}
+\end{frame}
+
+% =========================================================== 4. duals
+\begin{frame}
+  \framesubtitle{Reading the duals}
+  \frametitle{The negative price is not a flaw in the model. It is the right arithmetic.}
+
+  \begin{columns}[T,onlytextwidth]
+  \begin{column}{0.50\textwidth}
+    \vspace{0.5em}
+    {\fontsize{9.6}{12}\selectfont\hspace{0.9em}
+    $\begin{aligned}
+      \mu_1 &= c_2-c_1        &&= \hlm{200} \\[3pt]
+      \lambda_1 &= c_1-\mu_1  &&= \hlm{-100} \\[3pt]
+      \lambda_2 &= c_1+\mu_1  &&= \hlm{+300} \\[3pt]
+      \lambda_2-\lambda_1 &= 2\,(c_2-c_1) &&= \hgm{400}
+    \end{aligned}$\par}
+
+    \vspace{0.85em}
+    {\fontsize{8.6}{11.4}\selectfont
+    \begin{itemize}\setlength{\itemsep}{0.34em}
+      \item Ramp headroom is worth the difference between the two units.
+      \item Generating at t1 costs 100 and \emph{creates} headroom worth 200. Net, $-$100.
+      \item Generating at t2 costs 100 and \emph{consumes} headroom worth 200. Total, 300.
+      \item The spread between the hours is twice the cost difference.
+    \end{itemize}}
+  \end{column}
+
+  \begin{column}{0.47\textwidth}
+    \vspace{0.5em}
+    \panel{%
+      \fontsize{8.6}{11}\selectfont
+      \textbf{Revenue adequacy}\par
+      \vspace{0.15em}
+      Consumers pay 29,000 and generators receive 29,000. The revenue column sums
+      to zero.
+
+      \vspace{0.8em}
+      \textbf{Cost recovery}\par
+      \vspace{0.15em}
+      Thermal 1 sells at $-$100 at t1 and still closes with a profit of 5,000,
+      which is exactly $\mu_1 \times R = 200 \times 25$, the rent on its own ramp.
+      Thermal 2 closes at zero. No generator loses money.
+    }
+
+    \vspace{0.7em}
+    \gloss{Electricity has no waste bin. Since it is impossible to generate more
+    than is consumed, the negative price at t1 is the system saying that consuming
+    in that hour is worth 100 R\$/MWh.}
+  \end{column}
+  \end{columns}
+\end{frame}
+
+% =========================================================== 5. case B
+\begin{frame}
+  \framesubtitle{Case B \ \textbullet\ \ with a 1 \nocaps{MWh} battery}
+  \frametitle{The battery buys at $-$100, sells at $+$300, and earns 400.}
+
+  \begin{columns}[T,onlytextwidth]
+  \begin{column}{0.635\textwidth}
+    \vspace{0.9em}
+    {\tabfont
+    \setlength{\tabcolsep}{4.0pt}
+    \renewcommand{\arraystretch}{1.19}
+    \begin{tabular}{l r r @{\hspace{1.1em}} r r r}
+      \toprule
+       & \textbf{t1} & \textbf{t2} & \textbf{Revenue} & \textbf{Cost} & \textbf{Profit} \\
+      \midrule
+      Demand         & 100 & 130 & $-$29,000 & & \\
+      Thermal 1      & 101 & 126 & 27,700 & 22,700 & 5,000 \\
+      Thermal 2      & 0   & 3   & 900    & 900    & 0 \\
+      Battery        & \hg{$-$1} & \hg{$+$1} & \hg{400} & \hg{0} & \hg{400} \\
+      \addlinespace[0.1em]\midrule
+      Hourly cost    & 10,100 & 13,500 & & & \\
+      Spot price     & \hl{$-$100} & \textbf{300} & & & \\
+      \addlinespace[0.1em]\midrule
+      \textbf{Total} & & & \textbf{0} & \textbf{23,600} & \textbf{5,400} \\
+      \bottomrule
+    \end{tabular}}
+
+    \vspace{0.8em}
+    \gloss{The battery charges 1 MWh at t1, when the price is $-$100, and is
+    therefore paid 100 to consume. It discharges that same 1 MWh at t2 and sells
+    at 300. Revenue of 400 and zero cost. Prices do not change, because the units
+    at the margin are still the same.}
+  \end{column}
+
+  \begin{column}{0.335\textwidth}
+    \vspace{0.9em}
+    \panel{%
+      \fontsize{8.2}{10.6}\selectfont
+      \textbf{The model with the battery}\par
+      \vspace{0.55em}
+      $\displaystyle\min_{g,\,e\,\ge\,0}\ \sum_{t}\sum_{i} c_i\,g_{i,t}$\par
+      \vspace{0.55em}
+      subject to\par
+      \vspace{0.30em}
+      $\textstyle\sum_i g_{i,1} = d_1 + e \quad (\lambda_1)$\par
+      \vspace{0.42em}
+      $\textstyle\sum_i g_{i,2} + e = d_2 \quad (\lambda_2)$\par
+      \vspace{0.42em}
+      $g_{i,2}-g_{i,1} \le R \quad (\mu_i)$\par
+      \vspace{0.42em}
+      $e \le E \quad (\beta)$\par
+      \vspace{0.62em}
+      \gloss{$e$ is the energy shifted from t1 to t2, with $E = 1$ MWh and 100\%
+      efficiency. The dual of the capacity limit is the price difference,
+      \mbox{$\beta = 400$}.}
+    }
+  \end{column}
+  \end{columns}
+\end{frame}
+
+% =========================================================== 6. comparison
+\begin{frame}
+  \framesubtitle{The two cases side by side}
+  \frametitle{The battery's profit is the saving it creates for the system.}
+
+  \vspace{0.7em}
+  \centering
+  {\tabfont
+  \setlength{\tabcolsep}{5pt}
+  \renewcommand{\arraystretch}{1.26}
+  \begin{tabular}{l r r r @{\hspace{1.5em}} r r r}
+    \toprule
+     & \multicolumn{3}{c}{\textbf{Without battery}} & \multicolumn{3}{c}{\textbf{With battery}} \\
+    \cmidrule(r){2-4}\cmidrule(l){5-7}
+     & Revenue & Cost & Profit & Revenue & Cost & Profit \\
+    \midrule
+    Thermal 1     & 27,500 & 22,500 & 5,000 & 27,700 & 22,700 & 5,000 \\
+    Thermal 2     & 1,500  & 1,500  & 0     & 900    & 900    & 0 \\
+    Battery       &        &        &       & \hg{400} & \hg{0} & \hg{400} \\
+    Consumers     & $-$29,000 & & & $-$29,000 & & \\
+    \addlinespace[0.1em]\midrule
+    \textbf{Total} & \textbf{0} & \textbf{24,000} & \textbf{5,000}
+                   & \textbf{0} & \textbf{23,600} & \textbf{5,400} \\
+    \bottomrule
+  \end{tabular}}
+
+  \vspace{1.2em}
+  \begin{columns}[T,onlytextwidth]
+  \begin{column}{0.305\textwidth}
+    \panel{\centering\fontsize{8.2}{10.4}\selectfont
+      Operating saving\par\vspace{0.25em}
+      {\fontsize{11}{12}\selectfont\bfseries 24,000 $\rightarrow$ 23,600}\par
+      \vspace{0.15em}\hg{$-$400 R\$}}
+  \end{column}
+  \begin{column}{0.305\textwidth}
+    \panel{\centering\fontsize{8.2}{10.4}\selectfont
+      Battery profit\par\vspace{0.25em}
+      {\fontsize{11}{12}\selectfont\bfseries 400 $-$ 0}\par
+      \vspace{0.15em}\hg{$+$400 R\$}}
+  \end{column}
+  \begin{column}{0.305\textwidth}
+    \panel{\centering\fontsize{8.2}{10.4}\selectfont
+      Paid by consumers\par\vspace{0.25em}
+      {\fontsize{11}{12}\selectfont\bfseries 29,000 $=$ 29,000}\par
+      \vspace{0.15em}\hg{unchanged}}
+  \end{column}
+  \end{columns}
+\end{frame}
+
+% =========================================================== 7. saturation
+\begin{frame}
+  \framesubtitle{How much to build}
+  \frametitle{The battery's income is a scarcity rent, and it vanishes at 2.5 MWh.}
+
+  \begin{columns}[T,onlytextwidth]
+  \begin{column}{0.60\textwidth}
+    \vspace{1.1em}
+    {\tabfont
+    \setlength{\tabcolsep}{4.0pt}
+    \renewcommand{\arraystretch}{1.26}
+    \begin{tabular}{l r r r r}
+      \toprule
+      \textbf{Installed} & \textbf{Total} & \textbf{Price} & \textbf{Price}
+        & \textbf{Marginal} \\
+      \textbf{battery} & \textbf{cost} & \textbf{t1} & \textbf{t2}
+        & \textbf{value} \\
+      \midrule
+      0 MWh             & 24,000 & $-$100 & 300 & 400 \\
+      1 MWh             & 23,600 & $-$100 & 300 & 400 \\
+      2 MWh             & 23,200 & $-$100 & 300 & 400 \\
+      \addlinespace[0.12em]
+      2.5 MWh or more   & 23,000 & \hg{100} & \hg{100} & \hg{0} \\
+      \bottomrule
+    \end{tabular}}
+
+    \vspace{0.8em}
+    \gloss{Total cost in R\$; prices and marginal value in R\$/MWh. The marginal
+    value is what the next MWh of battery is worth to the system.}
+  \end{column}
+
+  \begin{column}{0.37\textwidth}
+    \vspace{1.1em}
+    {\fontsize{9.0}{12.0}\selectfont
+    With 2.5 MWh of storage the ramp stops binding, the expensive unit leaves the
+    dispatch, and both hours settle at 100 R\$/MWh. From there on, the next MWh of
+    battery is worth zero.\par}
+
+    \vspace{1.25em}
+    \thesis{\fontsize{8.8}{11.4}\selectfont
+      The same price that pays the first battery tells us when the next one stops
+      being needed. That is how price connects the market, and the incentives it
+      creates, to the needs of those who operate the system.}
+  \end{column}
+  \end{columns}
+\end{frame}

@@ -1,0 +1,66 @@
+%% Quando o preco diz a verdade -- uma bateria, duas horas e o valor da flexibilidade
+%% Beamer, pdfLaTeX, 16:9
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[portuguese]{babel}
+\usepackage[scaled=0.94]{helvet}
+\renewcommand*\familydefault{\sfdefault}
+\usepackage{amsmath,amssymb}
+\usefonttheme[onlymath]{serif}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage[tracking=true,letterspace=100]{microtype}
+
+% ---------------------------------------------------------------- palette
+\definecolor{ink}{HTML}{15212B}
+\definecolor{paperbg}{HTML}{FAF8F4}
+\definecolor{rulec}{HTML}{D8D2C6}
+\definecolor{muted}{HTML}{6E7681}
+\definecolor{brick}{HTML}{A8322A}
+\definecolor{tealx}{HTML}{0F6B62}
+\definecolor{softbg}{HTML}{F1EDE4}
+
+% ---------------------------------------------------------------- theme
+\usetheme{default}
+\setbeamercolor{background canvas}{bg=paperbg}
+\setbeamercolor{normal text}{fg=ink}
+\setbeamercolor{frametitle}{fg=ink}
+\setbeamercolor{framesubtitle}{fg=brick}
+\setbeamerfont{frametitle}{size=\fontsize{13.4}{15.4}\selectfont,series=\bfseries}
+\setbeamerfont{framesubtitle}{size=\fontsize{7.2}{8.4}\selectfont,series=\bfseries}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{itemize item}{\raisebox{0.30ex}{\color{brick}\rule{0.5ex}{0.5ex}}}
+\setbeamersize{text margin left=1.5em,text margin right=1.5em}
+
+\setbeamertemplate{frametitle}{%
+  \vspace{0.85em}%
+  {\usebeamerfont{framesubtitle}\usebeamercolor[fg]{framesubtitle}%
+   \textls[150]{\MakeUppercase{\insertframesubtitle}}\par}%
+  \vspace{0.28em}%
+  {\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}\insertframetitle\par}%
+  \vspace{0.30em}%
+  {\color{rulec}\rule{\textwidth}{0.4pt}}\par
+  \vspace{-0.2em}%
+}
+
+\setbeamertemplate{footline}{%
+  \hfill{\color{muted}\fontsize{7}{8}\selectfont\insertframenumber}\hspace{1.6em}\vspace{0.55em}%
+}
+
+% ---------------------------------------------------------------- helpers
+\newcommand{\nocaps}[1]{\ensuremath{\mathrm{#1}}}
+\newcommand{\hl}[1]{\textcolor{brick}{\textbf{#1}}}
+\newcommand{\hg}[1]{\textcolor{tealx}{\textbf{#1}}}
+\newcommand{\hlm}[1]{\textcolor{brick}{\mathbf{#1}}}
+\newcommand{\hgm}[1]{\textcolor{tealx}{\mathbf{#1}}}
+\newcommand{\gloss}[1]{{\color{muted}\fontsize{7.6}{9.4}\selectfont #1\par}}
+\newcommand{\thesis}[1]{%
+  \panel{{\color{brick}\rule{2.4em}{1.7pt}}\par\vspace{0.5em}#1}}
+\newcommand{\panel}[1]{%
+  \begingroup\setlength{\fboxsep}{0.75em}%
+  \colorbox{softbg}{\parbox{\dimexpr\linewidth-1.5em-6pt\relax}{\sloppy\emergencystretch=2em #1}}\endgroup}
+\newcommand{\tabfont}{\fontsize{8.7}{11.0}\selectfont}
+
