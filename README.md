@@ -1,7 +1,13 @@
 # Ramps and Batteries
 
+**Interactive deck: https://lampspuc.github.io/ramps-and-batteries/**
+
 Why a battery earns what it earns, worked out first on a two-unit example small
 enough to check by hand, and then on a real day of the Brazilian power system.
+
+The page runs in English, Portuguese, Spanish and Chinese, and the last slide
+lets you move the hydro ramp limit and the battery size and watch prices, the
+merit order and the settlement table respond.
 
 The argument in one line: **a ramp constraint, not a shortage of energy, is what
 pulls two hours apart in price**, and the value of storage is the size of that
@@ -16,7 +22,7 @@ cost multiplied by eight.
 | `slides/when-the-price-tells-the-truth.pdf` | Nine slides, English. |
 | `slides/preco-diz-a-verdade.pdf` | The same nine slides, Portuguese. |
 | `slides/*.tex`, `slides/figures/` | Beamer sources. pdfLaTeX, no external images: every figure is TikZ. |
-| `interactive/index.html` | The same deck as a self-contained page, in English, Portuguese, Spanish and Chinese, with the hydro ramp limit and the battery size as live controls. Open it in a browser. |
+| `index.html` | The interactive deck, served at the link above. Self-contained, no build step: open the file in a browser and it works offline too. |
 | `model/modelo.py` | The two-hour dispatch model. The reference implementation. |
 | `model/solver.js` | The same model in JavaScript, driving the interactive page. Reproduces `modelo.py` digit for digit. |
 | `model/despacho-check.py` | The textbook example, solved as an LP and verified three ways. |
