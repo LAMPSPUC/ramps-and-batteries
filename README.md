@@ -81,6 +81,26 @@ cd slides && pdflatex when-the-price-tells-the-truth.tex
 `model/modelo.py` needs `scipy` only for `despacho-check.py`; the two-hour model
 is plain Python.
 
+## How to cite
+
+GitHub reads `CITATION.cff`, so the **Cite this repository** button on the
+sidebar gives you the reference in APA and BibTeX. In short:
+
+> Street, A. (2026). *Ramps and Batteries: why a battery earns what it earns*
+> (Version 1.0.0). LAMPS, PUC-Rio. https://github.com/LAMPSPUC/ramps-and-batteries
+
+## License
+
+Copyright © 2026 Alexandre Street de Aguiar.
+
+The slides, figures, text and data are licensed under
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/): use, adapt and
+redistribute them, including commercially, as long as you give credit, say
+whether you changed anything, and link to the license. Full text in `LICENSE`.
+
+The code in `model/` is additionally available under the MIT license, in
+`LICENSE-CODE`, since a content licence is not written for software.
+
 ---
 
 Alexandre Street · LAMPS, PUC-Rio
